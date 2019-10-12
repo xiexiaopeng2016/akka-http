@@ -166,7 +166,7 @@ You do this by calling the `Route.seal()` method. The `Route.seal()` method appl
 route, and translates them to the respective @apidoc[HttpResponse].
 
 Note that explicit call on the `Route.seal` method is needed in test code, but in your application code it is not necessary.
-As described in @ref[Sealing a Route](routes.md#sealing-a-route), your application code only needs to bring
+As described in @ref[Sealing a Route](routes.md#封闭一个路由), your application code only needs to bring
 implicit rejection and exception handlers in scope.
 
 ## Testing Route fragments

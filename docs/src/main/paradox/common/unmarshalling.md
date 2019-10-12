@@ -24,7 +24,7 @@ content negotiation which saves two additional layers of indirection that are re
 
 ## Using unmarshallers
 
-For an example on how to use an unmarshaller on the server side, see for example the @ref[Dynamic Routing Example](../routing-dsl/index.md#dynamic-routing-example).
+For an example on how to use an unmarshaller on the server side, see for example the @ref[动态路由示例](../routing-dsl/index.md#动态路由示例).
 For the client side, see @ref[Processing Responses](../client-side/request-and-response.md#processing-responses)
 
 ## Predefined Unmarshallers

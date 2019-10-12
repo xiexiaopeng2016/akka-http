@@ -1,16 +1,14 @@
 <a id="routes"></a>
-# Routes
+# 路由
 
-The "Route" is the central concept of Akka HTTP's Routing DSL. All the structures you build with the DSL, no matter
-whether they consists of a single line or span several hundred lines, are @scala[`type`]@java[`function`] turning a 
-@apidoc[RequestContext] into a @scala[`Future[RouteResult]`]@java[`CompletionStage<RouteResult>`].
+"路由"是Akka HTTP路由DSL的中心概念。您使用DSL构建的所有结构，无论是由单行还是跨越几百行构成，都是将一个 @apidoc[RequestContext] 转化成一个 @scala[`Future[RouteResult]`]@java[`CompletionStage<RouteResult>`]的 @scala[`type`]@java[`function`]。
 
 @@@ div { .group-scala }
 
 ```scala
 type Route = RequestContext => Future[RouteResult]
 ```
-It's a simple alias for a function turning a @apidoc[RequestContext] into a `Future[RouteResult]`.
+它是一个将 @apidoc[RequestContext]转化成`Future[RouteResult]`的函数的简单别名。
 
 @@@
 
@@ -23,44 +21,32 @@ and `akka.stream.Materializer`, so that these don't have to be passed around man
 
 @@@
 
-Generally when a route receives a request (or rather a @apidoc[RequestContext] for it) it can do one of these things:
+通常，当路由接收到一个请求(或更确切地说是 @apidoc[RequestContext])时，它可以执行一个以下操作：
 
- * Complete the request by returning the value of `requestContext.complete(...)`
- * Reject the request by returning the value of `requestContext.reject(...)` (see @ref[Rejections](rejections.md#rejections))
- * Fail the request by returning the value of `requestContext.fail(...)` or by just throwing an exception (see @ref[Exception Handling](exception-handling.md#exception-handling))
- * Do any kind of asynchronous processing and instantly return a @scala[`Future[RouteResult]`]@java[`CompletionStage<RouteResult>`] to be eventually completed later
+ * 通过返回`requestContext.complete(...)`完成请求
+ * 通过返回`requestContext.reject(...)`拒绝请求(查看 @ref[Rejections](rejections.md#rejections)) 
+ * 通过返回`requestContext.fail(...)`失败请求，或只是抛出一个异常(查看 @ref[Exception Handling](exception-handling.md#exception-handling))
+ * 做任何类型的异步处理并即时返回一个被稍后完成的 @scala[`Future[RouteResult]`]@java[`CompletionStage<RouteResult>`]
 
-The first case is pretty clear, by calling `complete` a given response is sent to the client as reaction to the
-request. In the second case "reject" means that the route does not want to handle the request. You'll see further down
-in the section about route composition what this is good for.
+第一种情况很清楚，通过调用`complete`，一个给定响应将作为对请求的回应发送给客户端。在第二种情况下，"拒绝"表示路由不想处理该请求。在关于路由组合的后面章节中，您将看到它的好处。
 
-A @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] can be "sealed" using `Route.seal`, which relies on the in-scope `RejectionHandler` and @apidoc[ExceptionHandler]
-instances to convert rejections and exceptions into appropriate HTTP responses for the client.
-@ref[Sealing a Route](#sealing-a-route) is described more in detail later. 
+通过使用`Route.seal`， @scala[@scaladoc[路由](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Router]]可以被"封闭"，其依赖于在范围内的`RejectionHandler`和 @apidoc[ExceptionHandler] 实例来将拒绝和异常转换成相应的客户端HTTP响应。 @ref[封闭一个路由](#封闭一个路由)将在后面详细介绍。
 
+使用`Route.handlerFlow`或`Route.asyncHandler`一个 @scala[@scaladoc[路由](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]可以被提升到一个处理器 @apidoc[Flow] 或异步处理器函数，可以与来自 @ref[核心服务器API](../server-side/low-level-api.md)的`bindAndHandleXXX`调用一起使用。
 
-Using `Route.handlerFlow` or `Route.asyncHandler` a @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] can be lifted into a handler @apidoc[Flow] or async handler
-function to be used with a `bindAndHandleXXX` call from the @ref[Core Server API](../server-side/low-level-api.md).
-
-Note: There is also an implicit conversion from @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] to @apidoc[Flow[HttpRequest, HttpResponse, Unit]] defined in the
-@apidoc[RouteResult] companion, which relies on `Route.handlerFlow`.
+注意：那里还有一个从 @scala[@scaladoc[路由](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] 到 @apidoc[Flow[HttpRequest, HttpResponse, Unit]] 的隐式转换，定义在 @apidoc[RouteResult] 伴生对象，其依赖`Route.handlerFlow`。
 
 <a id="requestcontext"></a>
 ## RequestContext
 
-The request context wraps an @apidoc[HttpRequest] instance to enrich it with additional information that are typically
-required by the routing logic, like an `ExecutionContext`, @apidoc[Materializer], @apidoc[LoggingAdapter] and the configured
-@apidoc[RoutingSettings]. It also contains the `unmatchedPath`, a value that describes how much of the request URI has not
-yet been matched by a @ref[Path Directive](directives/path-directives/index.md#pathdirectives).
+请求上下文包装了一个 @apidoc[HttpRequest] 实例，用附加信息来充实它，它们是路由逻辑通常需要的，例如，`ExecutionContext`，@apidoc[Materializer]，@apidoc[LoggingAdapter]和已配置的 @apidoc[RoutingSettings]。它还包含`unmatchedPath`，一个描述有多少个请求URI尚未被 @ref[Path指令](directives/path-directives/index.md#pathdirectives) 匹配的值。
 
-The @apidoc[RequestContext] itself is immutable but contains several helper methods which allow for convenient creation of
-modified copies.
+@apidoc[RequestContext] 本身是不可变的，但是包含一些辅助方法，其允许方便地创建已修改的副本。
 
 <a id="routeresult"></a>
 ## RouteResult
 
-@apidoc[RouteResult] is a simple algebraic data type (ADT) that models the possible non-error results of a @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]].
-It is defined as such:
+@apidoc[RouteResult] 是一种简单的代数数据类型(ADT)，可对一个@scala[@scaladoc[路由](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]的非错误结果进行建模。它的定义如下：
 
 @@@ div { .group-scala }
 
@@ -75,33 +61,24 @@ object RouteResult {
 
 @@@
 
-Usually you don't create any @apidoc[RouteResult] instances yourself, but rather rely on the pre-defined @ref[RouteDirectives](directives/route-directives/index.md#routedirectives)
-(like @ref[complete](directives/route-directives/complete.md#complete), @ref[reject](directives/route-directives/reject.md#reject) or @ref[redirect](directives/route-directives/redirect.md#redirect)) or the respective methods on the [RequestContext](#requestcontext)
-instead.
+通常你不会自己创建任何 @apidoc[RouteResult] 实例，而是依赖于预先定义的 @ref[RouteDirectives](directives/route-directives/index.md#routedirectives)(例如 @ref[complete](directives/route-directives/complete.md#complete), @ref[reject](directives/route-directives/reject.md#reject) 或 @ref[redirect](directives/route-directives/redirect.md#redirect))，或由[RequestContext](#requestcontext)中的各自的方法代替。
 
-## Composing Routes
+## 组合路由
 
-There are three basic operations we need for building more complex routes from simpler ones:
+这里是我们需要的三个基本操作来从简单的路由构建更复杂的路由：
 
- * Route transformation, which delegates processing to another, "inner" route but in the process changes some properties
-of either the incoming request, the outgoing response or both
- * Route filtering, which only lets requests satisfying a given filter condition pass and rejects all others
- * Route chaining, which tries a second route if a given first one was rejected
+ * 路由转换，路由转换，其将处理委托给另一个"内部"路由，但在该过程中更改传入请求、传出响应或两者的某些属性
+ * 路由过滤，它只允许满足给定筛选条件的请求通过，并拒绝所有其他请求
+ * 路由链接，如果给定的第一个路由被拒绝，则尝试第二个路由
 
-The last point is achieved with the concatenation operator `~`, which is an extension method that becomes available
-when you `import akka.http.scaladsl.server.Directives._`.
-The first two points are provided by so-called @ref[Directives](directives/index.md#directives) of which a large number is already predefined by Akka
-HTTP and which you can also easily create yourself.
-@ref[Directives](directives/index.md#directives) deliver most of Akka HTTP's power and flexibility.
+最后一点是使用连接操作符`~`实现的，这是一个扩展方法，当您`import akka.http.scaladsl.server.Directives._`时可用。前两点是由所谓的@ref[指令](directives/index.md#directives)提供的，Akka HTTP已经预先定义了大量的指令，您也可以轻松地自己创建它们。@ref[指令](directives/index.md#directives)提供了Akka HTTP的大部分功能和灵活性。
 
 <a id="the-routing-tree"></a>
-## The Routing Tree
+## 路由树
 
-Essentially, when you combine directives and custom routes via the `concat` method, you build a routing
-structure that forms a tree. When a request comes in it is injected into this tree at the root and flows down through
-all the branches in a depth-first manner until either some node completes it or it is fully rejected.
+本质上，当您通过`concat`方法将指令和自定义路由组合起来时，您将构建一个形成树状形式的路由结构。当一个请求进入时，它被从根处注入到这个树中，并以深度优先的方式向下流经所有分支，直到某个节点完成它或完全拒绝它。
 
-Consider this schematic example:
+考虑以下示意图示例：
 
 @@@ div { .group-scala }
 
@@ -153,35 +130,28 @@ Route route =
 
 @@@
 
-Here five directives form a routing tree.
+这里五个指令组成一个路由树。
 
- * Route 1 will only be reached if directives `a`, `b` and `c` all let the request pass through.
- * Route 2 will run if `a` and `b` pass, `c` rejects and `d` passes.
- * Route 3 will run if `a` and `b` pass, but `c` and `d` reject.
+ * 路由1仅会到达，假如指令 `a`，`b`和`c`都让请求通过
+ * 路由2将会运行，假如`a`和`b`通过, `c`拒绝，且`d`通过。
+ * 路由3将会运行，假如`a`和`b`通过, 但是`c`和`d`拒绝.
 
-Route 3 can therefore be seen as a "catch-all" route that only kicks in, if routes chained into preceding positions
-reject. This mechanism can make complex filtering logic quite easy to implement: simply put the most
-specific cases up front and the most general cases in the back.
+因此，路由3可以被看作是一条"全覆盖"的路由，只有当连接到前面位置的线路被拒绝时，它才会开始运行。这种机制可以使复杂的过滤逻辑非常容易实现：只需将最具体的用例放在前面，将最一般的用例放在后面。
 
-## Sealing a Route
+## 封闭一个路由
 
-As described in @ref[Rejections](rejections.md) and @ref[Exception Handling](exception-handling.md),
-there are generally two ways to handle rejections and exceptions.
+如 @ref[拒绝](rejections.md) 和 @ref[异常处理](exception-handling.md) 中所述，通常有两种方法来处理拒绝和异常。
 
- * Bring rejection/exception handlers @scala[`into implicit scope at the top-level`]@java[`seal()` method of the @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]]
- * Supply handlers as arguments to @ref[handleRejections](directives/execution-directives/handleRejections.md#handlerejections) and @ref[handleExceptions](directives/execution-directives/handleExceptions.md#handleexceptions) directives 
+ * 将拒绝/异常处理程序引入 @scala[`顶层的隐式作用域`]@java[`seal()` method of the @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]]
+ * 为 @ref[handleRejections](directives/execution-directives/handleRejections.md#handlerejections)和 @ref[handleExceptions](directives/execution-directives/handleExceptions.md#handleexceptions)指令提供处理器作为参数
 
-In the first case your handlers will be "sealed", (which means that it will receive the default handler as a fallback for all cases your handler doesn't handle itself) 
-and used for all rejections/exceptions that are not handled within the route structure itself.
+在第一种情况下，您的处理程序将被"封闭"(这意味着它将接收默认的处理程序作为所有您的处理程序不能自己处理的情况的回退(fallback))，并用于路由结构内部本身不处理的所有拒绝/异常。
 
-### Route.seal() method to modify HttpResponse
+### Route.seal()方法修改HttpResponse
 
-In application code, unlike @ref[test code](testkit.md#testing-sealed-routes), you don't need to use the `Route.seal()` method to seal a route.
-As long as you bring implicit rejection and/or exception handlers to the top-level scope, your route is sealed. 
+在应用程序代码中，与 @ref[测试代码](testkit.md#testing-sealed-routes) 不同，您无需使用`Route.seal()`方法来封闭一个路由。只要将隐式拒绝和/或异常处理程序带到顶级作用域，路由就会被封闭。
 
-However, you can use `Route.seal()` to perform modification on HttpResponse from the route.
-For example, if you want to add a special header, but still use the default rejection handler, then you can do the following.
-In the below case, the special header is added to rejected responses which did not match the route, as well as successful responses which matched the route.
+但是，您可以使用`Route.seal()`对来自路由的HttpResponse进行修改。例如，如果你想要添加特殊的报头，但仍使用默认的拒绝处理程序，则可以执行以下操作。在下面的情况中，特殊报头已添加到与路由不匹配的拒绝响应，以及与路由匹配的成功响应中。
 
 Scala
 :   @@snip [RouteSealExampleSpec.scala]($root$/src/test/scala/docs/http/scaladsl/RouteSealExampleSpec.scala) { #route-seal-example }
@@ -189,13 +159,11 @@ Scala
 Java
 :   @@snip [RouteSealExample.java]($root$/src/test/java/docs/http/javadsl/RouteSealExample.java) { #route-seal-example }
 
-### Converting routes between Java and Scala DSLs
+### 在Java和Scala DSL之间转换路由
 
-In some cases when building reusable libraries that expose routes, it may be useful to be able to convert routes between
-their Java and Scala DSL representations. You can do so using the `asScala` method on a Java DSL route, or by using an
-`RouteAdapter` to wrap an Scala DSL route. 
+在某些情况下，构建暴露路由的可重用库时，能够在Java和Scala DSL表示形式之间转换路由可能会很有用。您可以在Java DSL路由上使用`asScala`方法，或使用`RouteAdapter`来包装Scala DSL路由。
 
-Converting Scala DSL routes to Java DSL:
+将Scala DSL路由转换为Java DSL：
 
 Scala
 :   @@snip [RouteJavaScalaDslConversionSpec.scala]($akka-http$//akka-http-tests/src/test/scala/akka/http/scaladsl/RouteJavaScalaDslConversionSpec.scala) { #scala-to-java }
@@ -203,7 +171,7 @@ Scala
 Java
 :   @@snip [RouteSealExample.java]($akka-http$/akka-http-tests/src/test/java/docs/http/javadsl/server/RouteJavaScalaDslConversionTest.java) { #scala-to-java }
 
-Converting Java DSL routes to Scala DSL:
+将Java DSL路由转换为Scala DSL：
 
 Scala
 :   @@snip [RouteJavaScalaDslConversionSpec.scala]($akka-http$//akka-http-tests/src/test/scala/akka/http/scaladsl/RouteJavaScalaDslConversionSpec.scala) { #java-to-scala }

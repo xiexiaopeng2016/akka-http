@@ -1,4 +1,4 @@
-# 2. Usage
+# 2. 用法
 
 @@toc { depth=2 }
 

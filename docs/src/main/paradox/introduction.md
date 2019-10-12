@@ -1,19 +1,16 @@
-# 1. Introduction
+# 1. 介绍
 
-The Akka HTTP modules implement a full server- and client-side HTTP stack on top of *akka-actor* and *akka-stream*. It's
-not a web-framework but rather a more general toolkit for providing and consuming HTTP-based services. While interaction
-with a browser is of course also in scope it is not the primary focus of Akka HTTP.
+Akka HTTP模块在*akka-actor*和*akka-stream*之上实现了完整的服务器端和客户端HTTP堆栈。它不是Web框架，而是提供和使用基于HTTP的服务的更通用的工具包。虽然与浏览器的交互也在范围内，但这并不是Akka HTTP的主要重点。
 
-Akka HTTP follows a rather open design and many times offers several different API levels for "doing the same thing".
-You get to pick the API level of abstraction that is most suitable for your application.
-This means that, if you have trouble achieving something using a high-level API, there's a good chance that you can get
-it done with a low-level API, which offers more flexibility but might require you to write more application code.
+Akka HTTP遵循一个相当开放的设计，并且很多时候为"做同一件事"提供了几种不同的API级别。您可以选择最适合您的应用程序的API抽象级别。这意味着，如果您在使用高级API实现某件事时遇到问题，则很有可能可以通过低级API完成此任务，这提供了更大的灵活性，但可能需要您编写更多的应用程序代码。
 
-## Philosophy
+## 哲学
 
-Akka HTTP has been driven with a clear focus on providing tools for building integration layers rather than application cores. As such it regards itself as a suite of libraries rather than a framework.
+Akka HTTP有明确的目标，其重点是提供用于构建集成层而不是应用程序核心的工具。因此，它认为自己是一套库，而不是一个框架。
 
-A framework, as we’d like to think of the term, gives you a “frame”, in which you build your application. It comes with a lot of decisions already pre-made and provides a foundation including support structures that lets you get started and deliver results quickly. In a way a framework is like a skeleton onto which you put the “flesh” of your application in order to have it come alive. As such frameworks work best if you choose them before you start application development and try to stick to the framework's “way of doing things” as you go along.
+就像我们想的那样，一个框架为您提供了一个"框架"，您可以在其中构建你的应用程序。它附带了许多预先制定的决策，并提供了包括支持结构在内的基础，可让您快速入门并快速交付结果。在某种程度上，框架就像骨架一样，您可以在其中放置应用程序的"血肉"，以便让它活起来。因此，如果您在开始应用程序开发之前就选择这些框架，并且在开发过程中尽量坚持框架的"做事方式，那么这些框架的工作效果最好。
+
+例如，如果您要构建一个面向浏览器的Web应用程序，那么选择一个Web框架并在其之上构建应用程序是很有意义的，因为该应用程序的“核心”是浏览器与您在Web上的代码之间的交互作用，服务器。框架制造商选择了一种设计此类应用程序的“行之有效”的方法，并让您“填充”了或多或少灵活的“应用程序模板”的空白。能够依靠这样的最佳实践架构是快速完成工作的重要资产。
 
 For example, if you are building a browser-facing web application it makes sense to choose a web framework and build your application on top of it because the “core” of the application is the interaction of a browser with your code on the web-server. The framework makers have chosen one “proven” way of designing such applications and let you “fill in the blanks” of a more or less flexible “application-template”. Being able to rely on best-practice architecture like this can be a great asset for getting things done quickly.
 

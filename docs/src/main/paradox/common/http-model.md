@@ -1,13 +1,10 @@
-# HTTP Model
+# HTTP模型
 
-Akka HTTP model contains a deeply structured, fully immutable, case-class based model of all the major HTTP data
-structures, like HTTP requests, responses and common headers.
-It lives in the *akka-http-core* module and forms the basis for most of Akka HTTP's APIs.
+Akka HTTP模型包含一个结构深刻的，完全不变的，基于样例类的模型，该模型包含所有主要的HTTP数据结构，例如HTTP请求，响应和公共报头。它位于*akka-http-core*模块中，并构成了大多数Akka HTTP API的基础。
 
-## Overview
+## 概述
 
-Since akka-http-core provides the central HTTP data structures you will find the following import in quite a
-few places around the code base (and probably your own code as well):
+由于akka-http-core提供了主要的HTTP数据结构，因此您会在代码库的很多地方找到以下导入(也可能是您自己的代码)：
 
 Scala
 :   @@snip [ModelSpec.scala]($test$/scala/docs/http/scaladsl/ModelSpec.scala) { #import-model }
@@ -15,38 +12,36 @@ Scala
 Java
 :   @@snip [ModelDocTest.java]($test$/java/docs/http/javadsl/ModelDocTest.java) { #import-model }
 
-This brings all of the most relevant types in scope, mainly:
+这带来了作用域内所有最相关的类型，主要是：
 
- * @apidoc[HttpRequest] and @apidoc[HttpResponse], the central message model
- * `headers`, the package containing all the predefined HTTP header models and supporting types
- * Supporting types like @apidoc[Uri], @apidoc[HttpMethods$], @apidoc[MediaTypes$], @apidoc[StatusCodes$], etc.
+ * @apidoc[HttpRequest] 和 @apidoc[HttpResponse], 主要的消息模型
+ * `headers`, 该软件包包含所有预定义的HTTP报头模型和支持类型
+ * 支持类型，例如 @apidoc[Uri], @apidoc[HttpMethods$], @apidoc[MediaTypes$], @apidoc[StatusCodes$], 等。
 
-A common pattern is that the model of a certain entity is represented by an immutable type (class or trait),
-while the actual instances of the entity defined by the HTTP spec live in an accompanying object carrying the name of
-the type plus a trailing plural 's'.
+一种常见的模式是某个实体的模型由不可变的类型(类或特质)表示，而HTTP规范定义的实体的实际实例位于一个伴随对象中，该对象带有该类型的名称以及结尾的复数形式's'。
 
-For example:
+例如:
 
- * Defined @apidoc[HttpMethod] instances @scala[live in]@java[are defined as static fields of] the @apidoc[HttpMethods$] @scala[object]@java[class].
- * Defined @apidoc[HttpCharset] instances @scala[live in]@java[are defined as static fields of] the @apidoc[HttpCharsets$] @scala[object]@java[class].
- * Defined @apidoc[HttpEncoding] instances @scala[live in]@java[are defined as static fields of] the @apidoc[HttpEncodings$] @scala[object]@java[class].
- * Defined @apidoc[HttpProtocol] instances @scala[live in]@java[are defined as static fields of] the @apidoc[HttpProtocols$] @scala[object]@java[class].
- * Defined @apidoc[MediaType] instances @scala[live in]@java[are defined as static fields of] the @apidoc[MediaTypes$] @scala[object]@java[class].
- * Defined @apidoc[StatusCode] instances @scala[live in]@java[are defined as static fields of] the @apidoc[StatusCodes$] @scala[object]@java[class].
+ * 定义的 @apidoc[HttpMethod]实例 @scala[位于]@java[are defined as static fields of] @apidoc[HttpMethods$] @scala[对象]@java[class].
+ * 定义的 @apidoc[HttpCharset]实例 @scala[位于]@java[are defined as static fields of] @apidoc[HttpCharsets$] @scala[对象]@java[class].
+ * 定义的 @apidoc[HttpEncoding]实例 @scala[位于]@java[are defined as static fields of] @apidoc[HttpEncodings$] @scala[对象]@java[class].
+ * 定义的 @apidoc[HttpProtocol]实例 @scala[位于]@java[are defined as static fields of] @apidoc[HttpProtocols$] @scala[对象]@java[class].
+ * 定义的 @apidoc[MediaType]实例 @scala[位于]@java[are defined as static fields of] @apidoc[MediaTypes$] @scala[对象]@java[class].
+ * 定义的 @apidoc[StatusCode]实例 @scala[位于]@java[are defined as static fields of] @apidoc[StatusCodes$] @scala[对象]@java[class].
 
 ## HttpRequest
 
-@apidoc[HttpRequest] and @apidoc[HttpResponse] are the basic @scala[case]@java[immutable] classes representing HTTP messages.
+@apidoc[HttpRequest] 和 @apidoc[HttpResponse]是表示HTTP消息的基本 @scala[样例]@java[immutable] 类。
 
-An @apidoc[HttpRequest] consists of
+一个 @apidoc[HttpRequest] 由以下组成
 
- * a method (GET, POST, etc.)
- * a URI (see @ref[URI model](uri-model.md) for more information)
- * a seq of headers
- * an entity (body data)
- * a protocol
+ * 一个方法(GET, POST, 等)
+ * 一个URI (查阅 @ref[URI model](uri-model.md) 了解更多信息)
+ * 一连串的标头
+ * 一个实体(主体数据)
+ * 一个协议
 
-Here are some examples how to construct an @apidoc[HttpRequest]:
+以下是一些如何构造 @apidoc[HttpRequest] 的示例：
 
 Scala
 :   @@snip [ModelSpec.scala]($test$/scala/docs/http/scaladsl/ModelSpec.scala) { #construct-request }
@@ -55,9 +50,7 @@ Java
 :   @@snip [ModelDocTest.java]($test$/java/docs/http/javadsl/ModelDocTest.java) { #construct-request }
 
 @@@ div { .group-scala }
-All parameters of `HttpRequest.apply` have default values set, so `headers` for example don't need to be specified
-if there are none. Many of the parameters types (like @apidoc[HttpEntity] and @apidoc[Uri]) define implicit conversions
-for common use cases to simplify the creation of request and response instances.
+`HttpRequest.apply`的所有参数都设置了默认值，因此`headers`，例如，如果它是none，则无需指定。许多参数类型(例如 @apidoc[HttpEntity]和 @apidoc[Uri])为常见用例定义了隐式转换，以简化请求和响应实例的创建。
 @@@
 @@@ div { .group-java }
 In its basic form `HttpRequest.create` creates an empty default GET request without headers which can then be
@@ -68,18 +61,14 @@ named after HTTP methods to create a request with a given method and URI directl
 @@@
 
 <a id="synthetic-headers"></a>
-### Synthetic Headers
+### 合成报头
 
-In some cases it may be necessary to deviate from fully RFC-Compliant behavior. For instance, Amazon S3 treats
-the `+` character in the path part of the URL as a space, even though the RFC specifies that this behavior should
-be limited exclusively to the query portion of the URI.
+在某些情况下，可能有必要偏离完全符合RFC的行为。例如，Amazon S3将URL路径部分中的`+`字符视为空格，即使RFC规定此行为应仅限于URI的查询部分。
 
-In order to work around these types of edge cases, Akka HTTP provides for the ability to provide extra,
-non-standard information to the request via synthetic headers. These headers are not passed to the client
-but are instead consumed by the request engine and used to override default behavior.
+为了解决这些类型的极端情况，Akka HTTP提供了通过合成标头向请求提供额外的非标准信息的能力。这些标头不传递给客户端，而是由请求引擎消费，并用于覆盖默认行为。
 
-For instance, in order to provide a raw request uri, bypassing the default url normalization, you could do the
-following:
+例如，为了提供原始请求uri，绕过默认的URL规范化，您可以执行以下操作：
+
 
 Scala
 :   @@snip [ModelSpec.scala]($test$/scala/docs/http/scaladsl/ModelSpec.scala) { #synthetic-header-s3 }
@@ -89,14 +78,14 @@ Java
 
 ## HttpResponse
 
-An @apidoc[HttpResponse] consists of
+一个 @apidoc[HttpResponse] 对象包括
 
- * a status code
- * a @scala[`Seq`]@java[list] of headers
- * an entity (body data)
- * a protocol
+ * 一个状态码
+ * 一个 @scala[`Seq`]@java[list] 报头
+ * 一个实体(主体数据)
+ * 一个协议
 
-Here are some examples how to construct an @apidoc[HttpResponse]:
+以下是一些如何构造 @apidoc[HttpResponse] 的示例：
 
 Scala
 :   @@snip [ModelSpec.scala]($test$/scala/docs/http/scaladsl/ModelSpec.scala) { #construct-response }
@@ -104,55 +93,31 @@ Scala
 Java
 :   @@snip [ModelDocTest.java]($test$/java/docs/http/javadsl/ModelDocTest.java) { #construct-response }
 
-In addition to the simple @scala[@apidoc[HttpEntity] constructors]@java[`HttpEntities.create` methods] which create an entity from a fixed `String` or @apidoc[akka.util.ByteString]
-as shown here the Akka HTTP model defines a number of subclasses of @apidoc[HttpEntity] which allow body data to be specified as a
-stream of bytes. @java[All of these types can be created using the method on `HttpEntites`.]
+除了从固定`String`或 @apidoc[akka.util.ByteString] 创建实体的简单 @scala[@apidoc[HttpEntity]构造函数]@java[`HttpEntities.create` methods] 之外，Akka HTTP模型还定义了许多 @apidoc[HttpEntity] 子类，这些子类允许将主体数据指定为字节流。@java[All of these types can be created using the method on `HttpEntites`.]
 
 <a id="httpentity"></a>
 ## HttpEntity
 
-An @apidoc[HttpEntity] carries the data bytes of a message together with its Content-Type and, if known, its Content-Length.
-In Akka HTTP there are five different kinds of entities which model the various ways that message content can be
-received or sent:
+一个 @apidoc[HttpEntity] 携带消息的数据字节，连同Content-Type，如果已知的话，它的Content-Length。在Akka HTTP中，有五种不同的实体，它们可以模拟接收或发送消息内容的各种方式：
 
 @scala[HttpEntity.Strict]@java[HttpEntityStrict]
-: The simplest entity, which is used when all the entity are already available in memory.
-It wraps a plain @apidoc[akka.util.ByteString] and  represents a standard, unchunked entity with a known `Content-Length`.
+: 最简单的实体，当所有实体在内存中都可用时使用。它包装了一个普通的 @apidoc[akka.util.ByteString]，并表示一个标准的，带有已知`Content-Length`的未分块(unchunked)实体。
 
 @scala[HttpEntity.Default]@java[HttpEntityDefault]
-: The general, unchunked HTTP/1.1 message entity.
-It has a known length and presents its data as a @apidoc[Source[ByteString, \_]] which can be only materialized once.
-It is an error if the provided source doesn't produce exactly as many bytes as specified.
-The distinction of @scala[`Strict`]@java[`HttpEntityStrict`] and @scala[`Default`]@java[`HttpEntityDefault`] is an API-only one. On the wire,
-both kinds of entities look the same.
+: 常规的，未分块(unchunked) HTTP/1.1消息实体。它具有已知的长度，并将其数据展示为一个只能实现一次的 @apidoc[Source[ByteString, \_]] 。如果提供的源产生的字节数与指定的字节数不完全相同，则会出现错误。 @scala[`Strict`]@java[`HttpEntityStrict`] 和 @scala[`Default`]@java[`HttpEntityDefault`] 的差别是一个API-only one。在线上(wire)，两种实体看起来都相同。
 
 @scala[HttpEntity.Chunked]@java[HttpEntityChunked]
-: The model for HTTP/1.1 [chunked content](https://tools.ietf.org/html/rfc7230#section-4.1) (i.e. sent with `Transfer-Encoding: chunked`).
-The content length is unknown and the individual chunks are presented as a @scala[`Source[HttpEntity.ChunkStreamPart]`]@java[@apidoc[Source[ChunkStreamPart, ?]]].
-A `ChunkStreamPart` is either a non-empty @scala[`Chunk`]@java[chunk] or @scala[a `LastChunk`]@java[the empty last chunk] containing optional trailer headers.
-The stream consists of zero or more @scala[`Chunked`]@java[non-empty chunks] parts and can be terminated by an optional @scala[`LastChunk` part]@java[last chunk].
+: 针对HTTP/1.1 [分块内容](https://tools.ietf.org/html/rfc7230#section-4.1) (即带`Transfer-Encoding: chunked`发送) 的模型。内容长度未知，且单独的块被呈现为一个 @scala[`Source[HttpEntity.ChunkStreamPart]`]@java[@apidoc[Source[ChunkStreamPart, ?]]]。`ChunkStreamPart`是一个非空的 @scala[`Chunk`]@java[chunk] 或 @scala[一个`LastChunk`]@java[the empty last chunk] 包含可选的trailer报头。流由零个或多个 @scala[`Chunked`]@java[non-empty chunks] 部分组成，可由一个可选的 @scala[`LastChunk`部分]@java[last chunk] 终止。
 
 @scala[HttpEntity.CloseDelimited]@java[HttpEntityCloseDelimited]
-: An unchunked entity of unknown length that is implicitly delimited by closing the connection (`Connection: close`).
-The content data are presented as a @apidoc[Source[ByteString, \_]].
-Since the connection must be closed after sending an entity of this type it can only be used on the server-side for
-sending a response.
-Also, the main purpose of `CloseDelimited` entities is compatibility with HTTP/1.0 peers, which do not support
-chunked transfer encoding. If you are building a new application and are not constrained by legacy requirements you
-shouldn't rely on `CloseDelimited` entities, since implicit terminate-by-connection-close is not a robust way of
-signaling response end, especially in the presence of proxies. Additionally this type of entity prevents connection
-reuse which can seriously degrade performance. Use @scala[`HttpEntity.Chunked`]@java[`HttpEntityChunked`] instead!
+: 长度未知的未分块的实体，其通过关闭连接(`Connection: close`)隐式地分隔。内容数据表示为一个 @apidoc[Source[ByteString, \_]]。由于必须在发送这种类型的实体后关闭连接，所以只能在服务器端使用它来发送响应。此外，`CloseDelimited`实体的主要目的是与HTTP/1.0对等点(peers)兼容，后者不支持分块传输编码。如果您正在构建一个新的应用程序，并且没有受到遗留需求的限制，那么您不应该依赖于`CloseDelimited`实体，因为隐式的terminate-by-connection-close不是一种发送响应结束信号的可靠方式，尤其是在存在代理的情况下。此外，这种类型的实体可以防止连接重用，从而严重降低性能。使用 @scala[`HttpEntity.Chunked`]@java[`HttpEntityChunked`] 代替!
 
 @scala[HttpEntity.IndefiniteLength]@java[HttpEntityIndefiniteLength]
-: A streaming entity of unspecified length for use in a `Multipart.BodyPart`.
+: 长度未指定的流实体，在`Multipart.BodyPart`内使用。
 
+实体类型 @scala[`Strict`]@java[`HttpEntityStrict`], @scala[`Default`]@java[`HttpEntityDefault`], 和 @scala[`Chunked`]@java[`HttpEntityChunked`] 是 @scala[`HttpEntity.Regular`]@java[@apidoc[RequestEntity]] 的子类型，这允许将它们用于请求和响应。与此相反， @scala[`HttpEntity.CloseDelimited`]@java[`HttpEntityCloseDelimited`] 只能用于响应。
 
-Entity types @scala[`Strict`]@java[`HttpEntityStrict`], @scala[`Default`]@java[`HttpEntityDefault`], and @scala[`Chunked`]@java[`HttpEntityChunked`] are a subtype of @scala[`HttpEntity.Regular`]@java[@apidoc[RequestEntity]]
-which allows to use them for requests and responses. In contrast, @scala[`HttpEntity.CloseDelimited`]@java[`HttpEntityCloseDelimited`] can only be used for responses.
-
-Streaming entity types (i.e. all but @scala[`Strict`]@java[`HttpEntityStrict`]) cannot be shared or serialized. To create a strict, shareable copy of an
-entity or message use `HttpEntity.toStrict` or `HttpMessage.toStrict` which returns a @scala[`Future`]@java[`CompletionStage`] of the object with
-the body data collected into a @apidoc[akka.util.ByteString].
+Streaming entity types (i.e. all but @scala[`Strict`]@java[`HttpEntityStrict`]) cannot be shared or serialized. To create a strict, shareable copy of an entity or message use `HttpEntity.toStrict` or `HttpMessage.toStrict` which returns a @scala[`Future`]@java[`CompletionStage`] of the object with the body data collected into a @apidoc[akka.util.ByteString].
 
 The @scala[@apidoc[HttpEntity] companion object]@java[class `HttpEntities`] contains @scala[several helper constructors]@java[static methods] to create entities from common types easily.
 

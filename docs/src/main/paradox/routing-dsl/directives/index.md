@@ -1,7 +1,6 @@
-# Directives
+# 指令
 
-A "Directive" is a small building block used for creating arbitrarily complex @ref[route structures](../routes.md).
-Akka HTTP already pre-defines a large number of directives and you can easily construct your own:
+“指令”是用于创建任意复杂的 @ref[路线结构](../routes.md)的小构件。Akka HTTP已经预定义了大量指令，您也可以轻松地构建自己的指令:
 
 @@toc { depth=1 }
 
@@ -13,13 +12,11 @@ Akka HTTP already pre-defines a large number of directives and you can easily co
 
 @@@
 
-## Basics
+## 基础
 
-Directives create @ref[Routes](../routes.md). To understand how directives work it is helpful to contrast them with the "primitive"
-way of creating routes.
+指令创建 @ref[路由](../routes.md)。要了解指令的工作方式，将它们与创建路径的"原始"方式进行对比会很有帮助。
 
-@ref[Routes](../routes.md) effectively are simply highly specialised functions that take a @apidoc[RequestContext] and eventually `complete` it, 
-which could (and often should) happen asynchronously.
+有效的 @ref[路由](../routes.md)只是高度专业化的功能，它们接受一个 @apidoc[RequestContext]并最终`complete`它，它可能(通常应该)异步发生。
 
 @@@ div { .group-java }
 
@@ -30,20 +27,19 @@ The @ref[complete](route-directives/complete.md) directive simply completes the 
 @@@ div { .group-scala }
 
 
-Since @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] is just a type alias for a function type @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] instances can be written in any way in which function
-instances can be written, e.g. as a function literal:
+由于 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]只是函数类型的类型别名，Route实例可以以任何方式写入，其中可以写入函数实例，例如作为函数字面量：
 
 ```scala
 val route: Route = { ctx => ctx.complete("yeah") }
 ```
 
-or shorter:
+或更短:
 
 ```scala
 val route: Route = _.complete("yeah")
 ```
 
-With the @ref[complete](route-directives/complete.md) directive this becomes even shorter:
+使用 @ref[complete](route-directives/complete.md)指令，它变得更短：
 
 @@@
 
@@ -59,11 +55,9 @@ Route route = complete("yeah");
 
 @@@ div { .group-scala }
 
-These three ways of writing this @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] are fully equivalent, the created `route` will behave identically in all
-cases.
+这三种编写此 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]的方式完全等效，在所有情况下创建的`route`行为都相同。
 
-Let's look at a slightly more complicated example to highlight one important point in particular.
-Consider these two routes:
+让我们看一个稍微复杂的示例，以特别强调一个重要点。考虑以下两条路由：
 
 ```scala
 val a: Route = {
@@ -77,11 +71,9 @@ val b: Route = { ctx =>
 }
 ```
 
-The difference between `a` and `b` is when the `println` statement is executed.
-In the case of `a` it is executed *once*, when the route is constructed, whereas in the case of `b` it is executed
-every time the route is *run*.
+`a`和`b`之间的区别在于何时执行`println`语句。在`a`的情况下，当路由被构造时它被执行*一次*，而在`b`情况下，路由*运行*时，它每次都被执行。
 
-Using the @ref[complete](route-directives/complete.md) directive the same effects are achieved like this:
+使用 @ref[complete](route-directives/complete.md)指令，可以达到以下相同的效果：
 
 ```scala
 val a = {
@@ -95,10 +87,9 @@ val b = complete {
 }
 ```
 
-This works because the argument to the @ref[complete](route-directives/complete.md) directive is evaluated *by-name*, i.e. it is re-evaluated
-every time the produced route is run.
+这是可行的，因为 @ref[complete](route-directives/complete.md)指令的参数是*按名称*评估的，即每次运行生成的路由时都会对其进行重新评估。
 
-Let's take things one step further:
+让我们更进一步：
 
 ```scala
 val route: Route = { ctx =>
@@ -109,7 +100,7 @@ val route: Route = { ctx =>
 }
 ```
 
-Using the @ref[get](method-directives/get.md) and @ref[complete](route-directives/complete.md) directives we can write this route like this:
+使用 @ref[get](method-directives/get.md)和 @ref[complete](route-directives/complete.md)指令，我们可以这样编写这个路由：
 
 ```scala
 val route =
@@ -121,9 +112,9 @@ val route =
   )
 ```
 
-Again, the produced routes will behave identically in all cases.
+同样，生成的路由在所有情况下都具有相同的行为。
 
-Note that, if you wish, you can also mix the two styles of route creation:
+请注意，如果您愿意，也可以混合两种风格的路由创建方式：
 
 ```scala
 val route =
@@ -135,12 +126,9 @@ val route =
   )
 ```
 
-Here, the inner route of the @ref[get](method-directives/get.md) directive is written as an explicit function literal.
+在这里， @ref[get](method-directives/get.md)指令的内部路由被编写为显式函数字面量。
 
-However, as you can see from these examples, building routes with directives rather than "manually" results in code that
-is a lot more concise and as such more readable and maintainable. In addition it provides for better composability (as
-you will see in the coming sections). So, when using Akka HTTP's Routing DSL you should almost never have to fall back
-to creating routes via @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] function literals that directly manipulate the @ref[RequestContext](../routes.md#requestcontext).
+然而，正如您从这些示例中看到的，使用指令而不是"手工"构建路由会使代码更加简洁，因此更具可读性和可维护性。另外，它提供了更好的可组合性(正如您将在接下来的部分中看到的)。因此，在使用Akka HTTP的路由DSL时，您几乎永远都不必回过头来直接操作@ref[RequestContext](../routes.md#requestcontext)通过 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]函数字面量来创建路由。
 
 @@@
 
@@ -173,11 +161,11 @@ Route route =
 
 @@@
 
-If no route matches a given request, a default `404 Not Found` response will be returned as response.
+如果没有路由匹配给定的请求，则将返回一个默认`404 Not Found`响应作为响应。
 
-## Structure
+## 结构体
 
-The general anatomy of a directive is as follows:
+指令的一般结构如下：
 
 Scala
 :  ```scala
@@ -193,29 +181,30 @@ directiveName(arguments [, ...], (extractions [, ...]) -> {
 })
 ```
 
-It has a name, zero or more arguments and optionally an inner route (The @ref[RouteDirectives](route-directives/index.md) are special in that they
-are always used at the leaf-level and as such cannot have inner routes).
+它具有名称，零个或多个参数以及可选的内部路由( @ref[RouteDirectives](route-directives/index.md)的特殊之处在于它们始终在leaf级别使用，因此不能具有内部路由)。
 
-Additionally directives can "extract" a number of values and make them available to their inner routes as function
-arguments. When seen "from the outside" a directive with its inner route form an expression of type @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]].
+另外，指令可以"提取"一些值，并使它们可作为函数参数供其内部路由使用。当"从外部"看到时，带有内部路由的指令形成 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]类型的表达式。
 
-## What Directives do
+## 指令做什么
 
-A directive can do one or more of the following:
+指令可以执行以下一项或多项操作：
 
- * Transform the incoming @apidoc[RequestContext] before passing it on to its inner route (i.e. modify the request)
- * Filter the @apidoc[RequestContext] according to some logic, i.e. only pass on certain requests and reject others
- * Extract values from the @apidoc[RequestContext] and make them available to its inner route as "extractions"
- * Chain some logic into the @ref[RouteResult](../routes.md#routeresult) future transformation chain (i.e. modify the response or rejection)
- * Complete the request
 
-This means a `Directive` completely wraps the functionality of its inner route and can apply arbitrarily complex
-transformations, both (or either) on the request and on the response side.
 
-## Composing Directives
 
-As you have seen from the examples presented so far the "normal" way of composing directives is nesting.
-Let's take a look at this concrete example:
+
+
+ * 在传递到其内部路由之前，将传入的 @apidoc[RequestContext]进行转换(即，修改请求)
+ * 根据某些逻辑过滤 @apidoc[RequestContext]，即仅传递某些请求而拒绝其他请求
+ * 从@apidoc[RequestContext]中提取值，并将其作为"extractions"提供给其内部路由
+ * 将一些逻辑链接到@ref[RouteResult](../routes.md#routeresult)，将来的转换链(即修改响应或拒绝)
+ * 完成(complete)请求
+
+这意味着一个`Directive`完全包装了其内部路由的功能，并且可以在请求和响应端(或两者)应用任意复杂的转换。
+
+## 组合指令
+
+正如您从目前给出的示例中所看到的，组合指令的"正常"方式是嵌套。让我们来看看这个具体的例子:
 
 Scala
 :  @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #example-1 }
@@ -223,8 +212,7 @@ Scala
 Java
 :  @@snip [DirectiveExamplesTest.java]($test$/java/docs/http/javadsl/server/DirectiveExamplesTest.java) { #example1 }
 
-Here the `get` and `put` directives are chained together @scala[with the `concat` combinator]@java[using the `orElse` method] to form a higher-level route that
-serves as the inner route of the `path` directive. Let's rewrite it in the following way:
+在这里，`get`和`put`指令@scala[与`concat`组合器]@java[使用`orElse`方法]链接在一起，形成了更高级别的路由，该路由充当了`path`指令的内部路由。让我们用以下方式重写它：
 
 Scala
 :  @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #getOrPut }
@@ -242,9 +230,7 @@ Instead of extracting the composed directives to its own method, we can also use
 
 @@@ div { .group-scala }
 
-What you can't see from this snippet is that directives are not implemented as simple methods but rather as stand-alone
-objects of type `Directive`. This gives you more flexibility when composing directives. For example you can
-also use the `|` operator on directives. Here is yet another way to write the example:
+从此片段中看不到的是，指令不是作为简单方法实现的，而是作为`Directive`类型的独立对象实现的。这为您在编写指令时提供了更大的灵活性。例如，你也可以在指令上使用`|`操作符。这是编写示例的另一种方法：
 
 @@@
 
@@ -256,31 +242,27 @@ Java
 
 @@@ div { .group-scala }
 
-Or better (without dropping down to writing an explicit @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]] function manually):
+或更好（无需深入手动编写一个显式 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]函数)：
 
 @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #getOrPutUsingPipeAndExtractMethod }
 
-If you have a larger route structure where the `(get | put)` snippet appears several times you could also factor it
-out like this:
+如果您有较大的路由结构，其中`(get | put)`代码段会出现多次，那么您也可以像这样将其分解：
 
 @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #example-5 }
 
-Note that, because `getOrPut` doesn't take any parameters, it can be a `val` here.
+请注意，由于`getOrPut`不接受任何参数，因此这里可以是`val`。
 
-As an alternative to nesting you can also use the `&` operator:
+作为嵌套的替代方法，您还可以使用`&`运算符：
 
 @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #example-6 }
 
-Here you can see that, when directives producing extractions are combined with `&`, the resulting "super-directive"
-simply extracts the concatenation of its sub-extractions.
+这里您可以看到，当提取产生的指令与`&`组合时，产生的"超级指令"只是提取其子提取的连接。
 
-And once again, you can factor things out if you want, thereby pushing the "factoring out" of directive configurations
-to its extreme:
+再一次，如果你想的话，你可以将要素分解出来，从而把指令配置的"分解"推向极致
 
 @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #example-7 }
 
-This type of combining directives with the `|` and `&` operators as well as "saving" more complex directive
-configurations as a `val` works across the board, with all directives taking inner routes.
+这种类型的组合指令使用`|`和`&`运算符和"保存"更复杂的指令配置为"val"一样，所有指令都采用内部路由。
 
 @@@
 
@@ -312,16 +294,13 @@ Notice how you could adjust the indentation in these last two examples to have a
 
 @@@
 
-Note that going too far with "compressing" several directives into a single one probably doesn't result in the most
-readable and therefore maintainable routing code. It might even be that the very first of this series of examples
-is in fact the most readable one.
+请注意，将多个指令"压缩"到一个指令中太过复杂，可能不会产生可读性最好、更容易维护的路由代码。甚至本系列的第一个示例实际上可能是最易读的。
 
-Still, the purpose of the exercise presented here is to show you how flexible directives can be and how you can
-use their power to define your web service behavior at the level of abstraction that is right for **your** application.
+尽管如此，这里给出的练习的目的是向您展示指令可以有多么灵活，以及您如何使用它们的能力在适合**您的**应用程序的抽象级别上定义您的web服务行为。
 
 @@@ div { .group-scala }
 
-### Composing Directives with `~` Operator
+### 使用`~`运算符组合指令
 
 @@@ 
 
@@ -332,18 +311,17 @@ Scala code that compiles but does not work as expected. What would be intended a
 
 @@@ div { .group-scala }
 
-Alternatively we can combine directives using the `~` operator where we chain them together instead of passing each directive as a separate argument. Let's take a look at the usage of this combinator:
+或者，我们可以使用`~`操作符将指令组合在一起，而不是将每个指令作为单独的参数传递。让我们来看看这个组合符的用法：
 
 @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #example-8 }
 
 @@@
 
-## Type Safety of Directives
+## 指令的类型安全
 
-When you combine directives with the @scala[`|` and `&` operators]@java[`anyOf` and `allOf` methods] the routing DSL makes sure that all extractions work as
-expected and logical constraints are enforced at compile-time.
+当您使用@scala[`|`和`&`操作符]@java[`anyOf`和`allOf`方法]组合指令时，路由DSL确保所有提取均按预期进行，并且在编译时强制执行逻辑约束。
 
-For example you cannot @scala[`|`]@java[`anyOf`] a directive producing an extraction with one that doesn't:
+例如，您不能@scala[`|`]@java[`anyOf`]一个指令生成一个提取：
 
 Scala
 :   ```scala
@@ -355,7 +333,7 @@ Java
 anyOf(this::get, this::extractClientIP, routeProvider) // doesn't compile
 ```
 
-Also the number of extractions and their types have to match up:
+此外，提取的数量和类型必须匹配:
 
 Scala
 :  ```scala
@@ -379,7 +357,7 @@ Route parameterFoo(Function<String, Route> inner) {
 }
 ```
 
-When you combine directives producing extractions with the @scala[`&` operator]@java[`allOf` method] all extractions will be properly gathered up:
+当您将产生指令生成的提取与 @scala[`&`运算符]@java[`allOf`方法] 组合在一起时，将正确收集所有提取：
 
 Scala
 :  ```scala
@@ -395,16 +373,15 @@ Java
 allOf(this::extractScheme, this::extractMethod, (scheme, method) -> ...) 
 ```
 
-Directives offer a great way of constructing your web service logic from small building blocks in a plug and play
-fashion while maintaining DRYness and full type-safety. If the large range of @ref[Predefined Directives](alphabetically.md) does not
-fully satisfy your needs you can also easily create @ref[Custom Directives](custom-directives.md).
+指令提供了一种很好的方式，以即插即用的方式从小的构建块构建web服务逻辑，同时保持DRY状态和完全类型安全。
+
+如果各种各样的 @ref[预先定义的指令](alphabetically.md) 不能完全满足您的需求，您还可以轻松创建 @ref[自定义指令](custom-directives.md)。
 
 @@@ div { .group-scala }
 
 ## Automatic Tuple extraction (flattening)
 
-Convenient Scala DSL syntax described in @ref[Basics](#basics), and @ref[Composing Directives](#composing-directives) 
-are made possible by Tuple extraction internally. Let's see how this works with examples.
+在 @ref[基础](#基础) 和 @ref[组合指令](#组合指令) 中描述的便捷Scala DSL语法使内部的元组提取成为可能. 让我们通过例子来看看它是如何工作的。
  
 ```scala
 val futureOfInt: Future[Int] = Future.successful(1)
@@ -415,7 +392,7 @@ val route =
     }
   }
 ```
-Looking at the above code, `onSuccess(futureOfInt)` returns a `Directive1[Int] = Directive[Tuple1[Int]]`.
+看看上面的代码， `onSuccess(futureOfInt)` 返回一个 `Directive1[Int] = Directive[Tuple1[Int]]`。
 
 ```scala
 val futureOfTuple2: Future[Tuple2[Int,Int]] = Future.successful( (1,2) )
@@ -427,8 +404,8 @@ val route =
   }
 ```
 
-Similarly, `onSuccess(futureOfTuple2)` returns a `Directive1[Tuple2[Int,Int]] = Directive[Tuple1[Tuple2[Int,Int]]]`,
-but this will be automatically converted to `Directive[Tuple2[Int,Int]]` to avoid nested Tuples.
+类似地， `onSuccess(futureOfTuple2)` 返回一个 `Directive1[Tuple2[Int,Int]] = Directive[Tuple1[Tuple2[Int,Int]]]`,
+但是这个会自动转换成 `Directive[Tuple2[Int,Int]]` 以避免嵌套元组。
 
 ```scala
 val futureOfUnit: Future[Unit] = Future.successful( () )
@@ -439,8 +416,7 @@ val route =
     }
   }
 ```
-If the future returns `Future[Unit]`, it is a bit special case as it results in `Directive0`.
-Looking at the above code, `onSuccess(futureOfUnit)` returns a `Directive1[Unit] = Directive[Tuple1[Unit]]`.
-However, the DSL interprets `Unit` as `Tuple0`, and automatically converts the result to `Directive[Unit] = Directive0`,
+
+如果将来返回 `Future[Unit]`， 这是一个有点特殊的情况，当它的结果是`Directive0`时。看看上面的代码, `onSuccess(futureOfUnit)` 返回一个 `Directive1[Unit] = Directive[Tuple1[Unit]]`。但是，DSL将 `Unit` 翻译为 `Tuple0`，并自动将结果转化为 `Directive[Unit] = Directive0`。
 
 @@@

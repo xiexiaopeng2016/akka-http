@@ -1,35 +1,29 @@
-# 4. Server API
+# 4. 服务器API
 
-Apart from the @ref[HTTP Client](../client-side/index.md) Akka HTTP also provides an embedded,
-[Reactive-Streams](https://www.reactive-streams.org/)-based, fully asynchronous HTTP/1.1 server implemented on top of @scala[@extref[Streams](akka-docs:scala/stream/index.html)]@java[@extref[Streams](akka-docs:java/stream/index.html)].
+除了 @ref[HTTP客户端](../client-side/index.md) Akka HTTP还提供了一种嵌入式，基于[反应-流](https://www.reactive-streams.org/)，完全异步HTTP/1.1服务器，其实现在@scala[@extref[流](akka-docs:scala/stream/index.html)]@java[@extref[流](akka-docs:java/stream/index.html)]之上。
 
-It supports the following features:
+它支持以下功能:
 
- * Full support for [HTTP persistent connections](https://en.wikipedia.org/wiki/HTTP_persistent_connection)
- * Full support for [HTTP pipelining](https://en.wikipedia.org/wiki/HTTP_pipelining)
- * Full support for asynchronous HTTP streaming including "chunked" transfer encoding accessible through an idiomatic API
- * Optional SSL/TLS encryption
- * WebSocket support
+ * 完全支持 [HTTP persistent connections](https://en.wikipedia.org/wiki/HTTP_persistent_connection)
+ * 完全支持 [HTTP pipelining](https://en.wikipedia.org/wiki/HTTP_pipelining)
+ * 完全支持异步HTTP流，包括通过惯用API访问的“分块”传输编码
+ * 可选的SSL/TLS加密
+ * WebSocket 支持
 
-The server-side components of Akka HTTP are split into two layers:
+Akka HTTP的服务器端组件分为两个层次：
 
-@ref[Core Server API](low-level-api.md)
-:  The basic low-level server implementation in the `akka-http-core` module.
+@ref[核心服务器API](low-level-api.md)
+:  `akka-http-core`模块内的基本的低级别服务器实现。
 
-@ref[High-level Server-Side API](../routing-dsl/index.md)
-:  Higher-level functionality in the `akka-http` module which offers a very flexible "Routing DSL" for elegantly defining RESTful web services as well as
-   functionality of typical web servers or frameworks, like deconstruction of URIs, content negotiation or
-   static content serving.
+@ref[高级别服务器端API](../routing-dsl/index.md)
+:  `akka-http`模块中的高级功能提供了非常灵活的"路由DSL"，用于优雅地定义RESTful Web服务以及典型Web服务器或框架的功能，例如URI的解构，内容协商或静态内容服务。
 
-Depending on your needs you can either use the low-level API directly or rely on the high-level
-@ref[Routing DSL](../routing-dsl/index.md) which can make the definition of more complex service logic much
-easier. You can also interact with different API levels at the same time and, independently of which API level you choose
-Akka HTTP will happily serve many thousand concurrent connections to a single or many different clients.
+根据您的需求，您可以直接使用低级API或依靠高级 @ref[路由DSL](../routing-dsl/index.md)，这可以使更复杂的服务逻辑的定义变得更加容易。您还可以同时与不同的API级别进行交互，并且无论您选择哪种API级别，Akka HTTP都可以为一个或多个不同的客户端提供数千个并发连接。
 
 @@@ note
-It is recommended to read the @ref[Implications of the streaming nature of Request/Response Entities](../implications-of-streaming-http-entity.md) section,
-as it explains the underlying full-stack streaming concepts, which may be unexpected when coming
-from a background with non-"streaming first" HTTP Servers.
+
+建议阅读 @ref[Implications of the streaming nature of Request/Response Entities](../implications-of-streaming-http-entity.md) 章节，因为它解释了底层的全堆栈流概念，当来自非"流优先" HTTP服务器的背景时，这可能是出乎意料的。
+
 @@@
 
 @@toc { depth=3 }
