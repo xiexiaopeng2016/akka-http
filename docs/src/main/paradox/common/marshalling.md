@@ -1,58 +1,40 @@
-# Marshalling
+# 编组
 
 @java[TODO @github[overhaul for Java](#1367)]
 
-Marshalling is the process of converting a higher-level (object) structure into some kind of lower-level
-representation, often a "wire format". Other popular names for marshalling are "serialization" or "pickling".
+编组是将高级别(对象)结构转换为某种低级别表示形式的过程，通常是"wire格式"。编组的其他流行名称是"序列化"或"pickle"。
 
-In Akka HTTP, marshalling means the conversion of an object of type `T` into a lower-level target type,
-e.g. a `MessageEntity` (which forms the "entity body" of an HTTP request or response) or a full @apidoc[HttpRequest] or
-@apidoc[HttpResponse].
+在Akka HTTP中，编组意味着将`T`类型的对象转换为较低级别的目标类型，例如，一个`MessageEntity`(形成HTTP请求或响应的"消息体")或一个完整的 @apidoc[HttpRequest] 或 @apidoc[HttpResponse]。
 
-On the server-side, for example, marshalling is used to convert an application-domain object to a response entity. Requests can
-contain an @apidoc[Accept] header that lists acceptable content types for the client, such as `application/json` and `application/xml`. A marshaller contains the logic to
-negotiate the result content types based on the @apidoc[Accept] and the `AcceptCharset` headers.
+例如，在服务器端，编组用于将应用程序域(application-domain)对象转换为响应实体。请求可以包含一个 @apidoc[Accept] 标头，它列出了客户端可接受的内容类型，例如`application/json`和`application/xml`。编组器包含根据 @apidoc[Accept] 和`AcceptCharset`标头协商结果内容类型的逻辑。
 
-## Basic Design
+## 基本设计
 
-Marshalling of instances of type `A` into instances of type `B` is performed by a @apidoc[Marshaller[A, B]].
+将类型`A`的实例编组为类型`B`的实例是由 @apidoc[Marshaller[A, B]] 执行的。
 
-Contrary to what you might initially expect, @apidoc[Marshaller[A, B]] is not a plain function `A => B` but rather
-essentially a function @scala[`A => Future[List[Marshalling[B]]]`]@java[`A => CompletionStage<List<Marshalling<B>>>`].
-Let's dissect this rather complicated looking signature piece by piece to understand why marshallers are designed this
-way.
-Given an instance of type `A` a @apidoc[Marshaller[A, B]] produces:
+与您最初期望的相反，@apidoc[Marshaller[A, B]]不是一个简单的`A => B`函数，而本质上是一个 @scala[`A => Future[List[Marshalling[B]]]`]@java[`A => CompletionStage<List<Marshalling<B>>>`] 函数。让我们逐一剖析这个看起来相当复杂的签名，以了解为何以这种方式设计编组器。给类型`A`的实例一个 @apidoc[Marshaller[A, B]] 产生：
 
-1. A @scala[`Future`]@java[`CompletionStage`]: This is probably quite clear. Marshallers are not required to synchronously produce a result, so instead
-they return a future, which allows for asynchronicity in the marshalling process.
+1. 一个 @scala[`Future`]@java[`CompletionStage`]：这可能是相当清楚的。编组不需要同步产生一个结果，因此，它们返回一个future，这允许编组过程中的异步性。
 
-2. of `List`: Rather than only a single target representation for `A` marshallers can offer several ones. Which
-one will be rendered onto the wire in the end is decided by content negotiation.
-For example, the @apidoc[Marshaller[OrderConfirmation, MessageEntity]] might offer a JSON as well as an XML representation.
-The client can decide through the addition of an @apidoc[Accept] request header which one is preferred. If the client doesn't
-express a preference the first representation is picked.
+2. of `List`: `A`编组器可以提供多个目标表示，而不是一个单一的。最终由内容协商决定将渲染哪一个。例如，@apidoc[Marshaller[OrderConfirmation, MessageEntity]] 可能提供JSON以及XML表示形式。客户端可以通过附加的 @apidoc[Accept] 请求标头来决定首选哪一个。如果客户机没有表示首选项，则选择第一个表示。
 
-3. of @scala[`Marshalling[B]`]@java[`Marshalling<B>`]: Rather than returning an instance of `B` directly marshallers first produce a
-@scala[`Marshalling[B]`]@java[`Marshalling<B>`]. This allows for querying the @apidoc[MediaType] and potentially the @apidoc[HttpCharset] that the marshaller
-will produce before the actual marshalling is triggered. Apart from enabling content negotiation this design allows for
-delaying the actual construction of the marshalling target instance to the very last moment when it is really needed.
-
+3. of @scala[`Marshalling[B]`]@java[`Marshalling<B>`]：不是直接返回`B`的实例，编组器首先产生一个 @scala[`Marshalling[B]`]@java[`Marshalling<B>`]。这允许查询 @apidoc[MediaType] 和潜在的 @apidoc[HttpCharset]，其将在编组器将在触发实际编组之前生成。除了启用内容协商之外，此设计还允许将编组目标实例的实际构造延迟到真正需要它的最后时刻。
+ 
 @@@ div { .group-scala }
 
-This is how `Marshalling` is defined:
+这是`Marshalling`如何定义的：
 
 @@snip [Marshaller.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/marshalling/Marshaller.scala) { #marshalling }
 
-Akka HTTP also defines a number of helpful aliases for the types of marshallers that you'll likely work with most:
+Akka HTTP还为您可能最常使用的编组器类型定义了许多有用的别名:
 
 @@snip [package.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/marshalling/package.scala) { #marshaller-aliases }
 
 @@@
 
-## Predefined Marshallers
+## 预定义的编组器
 
-Akka HTTP already predefines a number of marshallers for the most common types.
-Specifically these are:
+Akka HTTP已经为最常见的类型预定义了许多编组器。具体来说是：
 
 @@@ div { .group-scala }
 
@@ -106,73 +88,55 @@ All marshallers can be found in @apidoc[Marshaller].
 
 @@@ div { .group-scala }
 
-## Implicit Resolution
+## 隐式解决
 
-The marshalling infrastructure of Akka HTTP relies on a type-class based approach, which means that @apidoc[Marshaller]
-instances from a certain type `A` to a certain type `B` have to be available implicitly.
+Akka HTTP的编组基础结构依赖于基于类型类(type-class)的方法，这意味着 @apidoc[Marshaller] 实例从某种类型`A`到某种类型`B`必须是隐式可用。
 
-The implicits for most of the predefined marshallers in Akka HTTP are provided through the companion object of the
-@apidoc[Marshaller] trait. This means that they are always available and never need to be explicitly imported.
-Additionally, you can simply "override" them by bringing your own custom version into local scope.
+Akka HTTP中大多数预定义的编组器的隐式是通过 @apidoc[Marshaller] 特质的伴生对象提供的。这意味着它们始终可用，无需显式导入。另外，您可以通过将自己的自定义版本引入本地作用域来简单地“覆盖”它们。
 
 @@@
 
-## Custom Marshallers
+## 自定义编组器
 
-Akka HTTP gives you a few convenience tools for constructing marshallers for your own types.
-Before you do that you need to think about what kind of marshaller you want to create.
-If all your marshaller needs to produce is a `MessageEntity` then you should probably provide a
-@scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]]. The advantage here is that it will work on both the client- as well as the server-side since
-a @scala[`ToReponseMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpResponse]]] as well as a @scala[`ToRequestMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpRequest]]] can automatically be created if a
-@scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]] is available.
+Akka HTTP为您提供了一些方便的工具，用于为您自己的类型构造编组器。在执行此操作之前，您需要考虑要你想要创建哪种编组器。如果您的所有编组需要生成一个`MessageEntity`，那么您可能应该提供一个  @scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]]。这样做的优点是，它会同时在客户端以及服务器端工作，因为一个 @scala[`ToReponseMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpResponse]]] 和一个 @scala[`ToRequestMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpRequest]]] 可以自动的创建，如果一个 @scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]] 是可用的。
 
-If, however, your marshaller also needs to set things like the response status code, the request method, the request URI
-or any headers then a @scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]] won't work. You'll need to fall down to providing a
-@scala[`ToResponseMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpResponse]]] or a @scala[`ToRequestMarshaller[T]]`]@java[@apidoc[Marshaller[T, HttpRequest]]] directly.
+但是，如果您的编组还需要设置诸如响应状态码，请求方法，请求URI或任何标头之类的内容，则 @scala[`ToEntityMarshaller[T]`]@java[@apidoc[Marshaller[T, MessageEntity]]] 将不能工作。您需要直接提供一个 @scala[`ToResponseMarshaller[T]`]@java[@apidoc[Marshaller[T, HttpResponse]]] 或一个@scala[`ToRequestMarshaller[T]]`]@java[@apidoc[Marshaller[T, HttpRequest]]]。
 
-For writing your own marshallers you won't have to "manually" implement the @apidoc[Marshaller] @scala[trait]@java[class] directly.
+要编写自己的编组器，您不必直接“手动”实现 @apidoc[Marshaller] @scala[特质]@java[类]。
 
 @@@ div { .group-scala }
 
-Rather, it should be possible to use one of the convenience construction helpers defined on the @apidoc[Marshaller]
-companion:
+相反，应该可以使用一个定义在 @apidoc[Marshaller] 伴生对象中的便捷构造助手：
 
 @@snip [Marshaller.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/marshalling/Marshaller.scala) { #marshaller-creation }
 
 @@@
 
-## Deriving Marshallers
+## 派生编组器
 
-Sometimes you can save yourself some work by reusing existing marshallers for your custom ones.
-The idea is to "wrap" an existing marshaller with some logic to "re-target" it to your type.
+有时，您可以通过将现有的编组重用为自定义编组来节省一些工作。这个想法是用某种逻辑"包装"现有的编组器，以将其"重定向"到您的类型。
 
-In this regard wrapping a marshaller can mean one or both of the following two things:
+在这方面，将编组程序包装起来可能意味着以下两件事之一或全部：
 
- * Transform the input before it reaches the wrapped marshaller
- * Transform the output of the wrapped marshaller
+ * 在输入到达包装的编组器之前进行转换
+ * 转换包装的编组器的输出
 
-For the latter (transforming the output) you can use `baseMarshaller.map`, which works exactly as it does for functions.
-For the former (transforming the input) you have four alternatives:
+对于后者(转换输出)，您可以使用`baseMarshaller.map`，其工作恰好与它为函数做的一样。对于前者(转换输入)，您有四个选择：
 
  * `baseMarshaller.compose`
  * `baseMarshaller.composeWithEC`
  * `baseMarshaller.wrap`
  * `baseMarshaller.wrapWithEC`
 
-`compose` works just like it does for functions.
-`wrap` is a compose that allows you to also change the `ContentType` that the marshaller marshals to.
-The `...WithEC` variants allow you to receive an `ExecutionContext` internally if you need one, without having to
-depend on one being available implicitly at the usage site.
+`compose`的工作恰好与它为函数做的一样。`wrap`是一个组合，也允许您更改`ContentType`，这正是编组器要编组的。这些`...WithEC`变体允许您在在内部接收一个`ExecutionContext`，如果需要一个的话，而不必依赖使用现场隐式可用的一种。
 
-## Using Marshallers
+## 使用编组器
 
-In many places throughout Akka HTTP, marshallers are used implicitly, e.g. when you define how to @ref[complete](../routing-dsl/directives/route-directives/complete.md) a
-request using the @ref[Routing DSL](../routing-dsl/index.md).
+在Akka HTTP的许多地方，都隐式使用了编组，例如，当您定义如何使用 @ref[路由DSL](../routing-dsl/index.md) @ref[完成](../routing-dsl/directives/route-directives/complete.md) 请求时。
 
 @@@ div { .group-scala }
 
-However, you can also use the marshalling infrastructure directly if you wish, which can be useful for example in tests.
-The best entry point for this is the @scaladoc[Marshal](akka.http.scaladsl.marshalling.Marshal) object, which you can use like this:
+但是，您也可以根据需要直接使用编组基础结构，这在测试中很有用。最好的入口点是 @scaladoc[Marshal](akka.http.scaladsl.marshalling.Marshal) 对象，您可以像这样使用它：
 
 @@snip [MarshalSpec.scala]($test$/scala/docs/http/scaladsl/MarshalSpec.scala) { #use-marshal }
 

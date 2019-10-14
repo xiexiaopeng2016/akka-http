@@ -1,9 +1,6 @@
-# JSON Support
+# JSON支持
 
-Akka HTTP's @ref[marshalling](marshalling.md) and @ref[unmarshalling](unmarshalling.md) infrastructure makes it rather easy to seamlessly convert application-domain objects from and to JSON.
-Integration with @scala[[spray-json]]@java[[Jackson]] is provided out of the box through the @scala[`akka-http-spray-json`]@java[`akka-http-jackson`] module.
-Integration with other JSON libraries are supported by the community.
-See [the list of current community extensions for Akka HTTP](https://akka.io/community/#extensions-to-akka-http).
+Akka HTTP的 @ref[编组](marshalling.md) 和 @ref[解组](unmarshalling.md) 基础设施使得它比较容易无缝转换应用程序域对象从和到JSON。@scala[`akka-http-spray-json`]@java[`akka-http-jackson`] 模块开箱即用地提供了与 @scala[[spray-json]]@java[[Jackson]] 的集成。与其他JSON库的集成是由社区支持的。请参阅[Akka HTTP的当前社区扩展列表](https://akka.io/community/#extensions-to-akka-http)。
 
 @@@ div { .group-java }
 
@@ -34,12 +31,11 @@ Refer to @github[this file](/akka-http-tests/src/main/java/akka/http/javadsl/ser
 
 @@@ div { .group-scala }
 
-## spray-json Support
+## spray-json支持
 
-The @scaladoc[SprayJsonSupport](akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport) trait provides a `FromEntityUnmarshaller[T]` and `ToEntityMarshaller[T]` for every type `T`
-that an implicit `spray.json.RootJsonReader` and/or `spray.json.RootJsonWriter` (respectively) is available for.
+@scaladoc[SprayJsonSupport](akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport)特质提供了一个`FromEntityUnmarshaller[T]`和`ToEntityMarshaller[T]`为每一个类型`T`，一个隐式`spray.json.RootJsonReader`和/或`spray.json.RootJsonWriter`(分别)是可用的。
 
-To enable automatic support for (un)marshalling from and to JSON with [spray-json], add a library dependency onto:
+要启用自动支持使用[spray-json]从和到JSON编(解)组，请将库依赖项添加到：
 
 @@dependency [sbt,Gradle,Maven] {
   group="com.typesafe.akka"
@@ -47,25 +43,24 @@ To enable automatic support for (un)marshalling from and to JSON with [spray-jso
   version="$project.version$"
 }
 
-Next, provide a `RootJsonFormat[T]` for your type and bring it into scope. Check out the [spray-json] documentation for more info on how to do this.
+接下来，为您的类型提供一个`RootJsonFormat[T]`并将其纳入到作用域。请查看[spray-json]文档，以获取有关如何执行此操作的更多信息。
 
-Finally, import the `FromEntityUnmarshaller[T]` and `ToEntityMarshaller[T]` implicits directly from `SprayJsonSupport` as shown in the example below or mix the `akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport` trait into your JSON support module.
+最后，直接从`SprayJsonSupport`中导入`FromEntityUnmarshaller[T]`和`ToEntityMarshaller[T]`隐式，如下面的示例所示，或将`akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport`特质混入到您的JSON支持模块中。
 
-Once you have done this (un)marshalling between JSON and your type `T` should work nicely and transparently.
+一旦你完成了JSON和类型`T`之间的编排(解组)，类型`T`应该可以正常且透明地进行工作。
 
 @@snip [SprayJsonExampleSpec.scala]($test$/scala/docs/http/scaladsl/SprayJsonExampleSpec.scala) { #minimal-spray-json-example }
 
 @@@ 
 
 <a id="json-streaming-client-side"></a>
-## Consuming JSON Streaming style APIs
+## 消费JSON流样式API
 
-A popular way of implementing streaming APIs is [JSON Streaming](https://en.wikipedia.org/wiki/JSON_Streaming) (see @ref[Source Streaming](../routing-dsl/source-streaming-support.md)
-for documentation on building server-side of such API).
+实现流API的一种流行方法是[JSON流](https://en.wikipedia.org/wiki/JSON_Streaming)(有关构建此类服务器端API的文档，请参阅@ref[源流](../routing-dsl/source-streaming-support.md))。
 
-Depending on the way the API returns the streamed JSON (newline delimited, raw sequence of objects, or "infinite array") 
-you may have to apply a different framing mechanism, but the general idea remains the same: consuming the infinite entity stream
-and applying a framing to it, such that the single objects can be easily deserialized using the usual marshalling infrastructure:
+根据API返回流式JSON（换行符分隔，对象的原始序列或“无限数组”）的方式，您可能必须应用不同的框架机制，但总体思路仍然相同：使用无限实体流并应用框架，以便可以使用常规的编组基础结构轻松地对单个对象进行反序列化：
+
+Depending on the way the API returns the streamed JSON (newline delimited, raw sequence of objects, or "infinite array") you may have to apply a different framing mechanism, but the general idea remains the same: consuming the infinite entity stream and applying a framing to it, such that the single objects can be easily deserialized using the usual marshalling infrastructure:
 
 Scala
 :   @@snip [EntityStreamingSpec.scala]($akka-http$/akka-http-tests/src/test/scala/akka/http/scaladsl/server/EntityStreamingSpec.scala) { #json-streaming-client-example }
@@ -75,8 +70,7 @@ Java
 
 @@@ div { .group-scala }
 
-In the above example the marshalling is handled by the implicitly provided `JsonEntityStreamingSupport`, which is also used when building server-side streaming APIs.
-You can also achieve the same more explicitly, by manually connecting the entity byte stream through a framing and then deserialization stage: 
+在上面的示例中，编组由隐式提供的`JsonEntityStreamingSupport`进行处理，它也用在构建服务器端流式API时。您还可以更明确地实现相同的功能，通过手动连接实体字节流通过一个帧，然后反序列化阶段:
 
 Scala
 :   @@snip [EntityStreamingSpec.scala]($akka-http$/akka-http-tests/src/test/scala/akka/http/scaladsl/server/EntityStreamingSpec.scala) { #json-streaming-client-example-raw }
@@ -96,17 +90,17 @@ and often good enough rather than writing a fully streaming JSON parser (which a
 
 @@@ div { .group-scala }
 
-## Pretty printing
+## 漂亮的打印
 
-By default, spray-json marshals your types to compact printed JSON by implicit conversion using `CompactPrinter`, as defined in:
+默认情况下，Spray-json通过使用`CompactPrinter`进行隐式转换，将您的类型编组为紧凑的打印JSON ，如以下定义：
 
 @@snip [SprayJsonSupport.scala]($akka-http$/akka-http-marshallers-scala/akka-http-spray-json/src/main/scala/akka/http/scaladsl/marshallers/sprayjson/SprayJsonSupport.scala) { #sprayJsonMarshallerConverter }
 
-Alternatively to marshal your types to pretty printed JSON, bring a `PrettyPrinter` in scope to perform implicit conversion.
+另外，也可以将您的类型编组为漂亮的打印JSON，并引入`PrettyPrinter`到作用域以执行隐式转换。
 
 @@snip [SprayJsonPrettyMarshalSpec.scala]($test$/scala/docs/http/scaladsl/SprayJsonPrettyMarshalSpec.scala) { #example }
 
-To learn more about how spray-json works please refer to its [documentation][spray-json].
+要了解有关spray-json如何工作的更多信息，请参阅其[文档][spray-json]。
 
 @@@
 

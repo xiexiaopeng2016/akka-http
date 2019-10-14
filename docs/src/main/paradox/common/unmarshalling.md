@@ -1,36 +1,28 @@
-# Unmarshalling
+# 解组
 
-"Unmarshalling" is the process of converting some kind of a lower-level representation, often a "wire format", into a
-higher-level (object) structure. Other popular names for it are "Deserialization" or "Unpickling".
+"解组"是将某种较低级别的表示形式(通常是"wire格式")转换为较高级别(对象)结构的过程。它的其他流行名称是"反序列化"或"Unpickling"。
 
-In Akka HTTP "Unmarshalling" means the conversion of a lower-level source object, e.g. a `MessageEntity`
-(which forms the "entity body" of an HTTP request or response) or a full @apidoc[HttpRequest] or @apidoc[HttpResponse],
-into an instance of type `T`.
+在Akka HTTP中，"解组"是指将较低级别的源对象，例如，一个`MessageEntity`(其构成HTTP请求或响应的"entity body")或一个完整的 @apidoc[HttpRequest] 或 @apidoc[HttpResponse]，转换为`T`类型的实例。
 
-## Basic Design
+## 基本设计
 
-Unmarshalling of instances of type `A` into instances of type `B` is performed by an @apidoc[Unmarshaller[A, B]].
+将类型`A`实例解组为类型`B`实例是由一个 @apidoc[Unmarshaller[A, B]] 执行的。
 
 @@@ div { .group-scala }
-Akka HTTP also predefines a number of helpful aliases for the types of unmarshallers that you'll likely work with most:
-
+Akka HTTP还为您可能会使用的大多数解组器类型预定义了许多有用的别名：
 @@snip [package.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/unmarshalling/package.scala) { #unmarshaller-aliases }
 
 @@@
 
-At its core an @apidoc[Unmarshaller[A, B]] is very similar to a @scala[function `A => Future[B]`]@java[`Function<A, CompletionStage<B>>`] and as such quite a bit simpler
-than its @ref[marshalling](marshalling.md) counterpart. The process of unmarshalling does not have to support
-content negotiation which saves two additional layers of indirection that are required on the marshalling side.
+在它的核心， @apidoc[Unmarshaller[A, B]] 与函数 @scala[function `A => Future[B]`]@java[`Function<A, CompletionStage<B>>`] 非常相似，因此比其编组对应的 @ref[marshalling](marshalling.md) 对象要简单得多。解组过程不必支持内容协商，这节省了编组端所需的两个额外的间接层。
 
-## Using unmarshallers
+## 使用解组器
 
-For an example on how to use an unmarshaller on the server side, see for example the @ref[动态路由示例](../routing-dsl/index.md#动态路由示例).
-For the client side, see @ref[Processing Responses](../client-side/request-and-response.md#processing-responses)
+有关如何在服务器端使用解组器的示例，请参见 @ref[动态路由示例](../routing-dsl/index.md#动态路由示例)。对于客户端，请参阅@ref[处理响应](../client-side/request-and-response.md#processing-responses)。
 
-## Predefined Unmarshallers
+## 预定义的解组器
 
-Akka HTTP already predefines a number of unmarshallers for the most common types.
-Specifically these are:
+Akka HTTP已经为最常见的类型预定义了许多解组器。具体来说是：
 
  * @scala[@scaladoc[PredefinedFromStringUnmarshallers](akka.http.scaladsl.unmarshalling.PredefinedFromStringUnmarshallers)]
    @java[@javadoc[StringUnmarshallers](akka.http.javadsl.unmarshalling.StringUnmarshallers)]
@@ -56,28 +48,21 @@ Specifically these are:
     * @apidoc[Unmarshaller[A, Option[B]]], if an @apidoc[Unmarshaller[A, B]] is available
 @@@
 
-Additional unmarshallers are available in separate modules for specific content types, such as
-@ref[JSON](json-support.md)@scala[ and @ref[XML](xml-support.md)].
+其他解组器可在单独的模块中用于特定的内容类型，例如 @ref[JSON](json-support.md)@scala[和 @ref[XML](xml-support.md)]。
 
 @@@ div { .group-scala }
 
-## Implicit Resolution
+## 隐式解决
 
-The unmarshalling infrastructure of Akka HTTP relies on a type-class based approach, which means that @apidoc[Unmarshaller]
-instances from a certain type `A` to a certain type `B` have to be available implicitly.
+Akka HTTP的解组基础结构依赖于基于类型类(type-class)的方法，这意味着从特定类型`A`到特定类型`B`的 @apidoc[Unmarshaller] 实例必须隐式可用。
 
-The implicits for most of the predefined unmarshallers in Akka HTTP are provided through the companion object of the
-@apidoc[Unmarshaller] trait. This means that they are always available and never need to be explicitly imported.
-Additionally, you can simply "override" them by bringing your own custom version into local scope.
+Akka HTTP中大多数预定义的解组器的隐式都是通过 @apidoc[Unmarshaller] 特质的伴生对象提供的。这意味着它们始终可用，无需显式导入。另外，您可以通过将自己的自定义版本引入本地作用域来简单地“覆盖”它们。
 
 @@@
 
-## Custom Unmarshallers
+## 自定义解组器
 
-Akka HTTP gives you a few convenience tools for constructing unmarshallers for your own types.
-Usually you won't have to "manually" implement the @apidoc[Unmarshaller] @scala[trait]@java[class] directly.
-Rather, it should be possible to use one of the convenience construction helpers defined on
-@scala[the @apidoc[Unmarshaller] companion]@java[@apidoc[Unmarshaller]]:
+Akka HTTP为您提供了一些方便的工具，用于为您自己的类型构造解组器。通常，您不必直接"手动"实现 @apidoc[Unmarshaller] @scala[特质]@java[类]。相反，它应该可以使用在 @scala[the @apidoc[Unmarshaller]伴生对象]@java[@apidoc[Unmarshaller]]上定义的方便的构造助手：
 
 Scala
 :  @@snip [Unmarshaller.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/unmarshalling/Unmarshaller.scala) { #unmarshaller-creation }
@@ -86,17 +71,14 @@ Java
 :  @@snip [Unmarshallers.scala]($akka-http$/akka-http/src/main/java/akka/http/javadsl/unmarshalling/Unmarshallers.java) { #unmarshaller-creation }
 
 @@@ note
-To avoid unnecessary memory pressure, unmarshallers should make sure to either fully consume the incoming entity data stream, or make sure it is properly cancelled on error.
-Failure to do so might keep the remaining part of the stream in memory for longer than necessary.
+为了避免不必要的内存压力，解组器应确保完全消耗传入的实体数据流，或确保在出错时将其正确取消。否则，可能会将流的其余部分保留在内存中的时间超过必要的时间。
 @@@
 
-## Deriving Unmarshallers
+## 派生解组器
 
-Sometimes you can save yourself some work by reusing existing unmarshallers for your custom ones.
-The idea is to "wrap" an existing unmarshaller with some logic to "re-target" it to your type.
+有时，您可以通过将现有的解组器重用于一个自定义解组器来节省一些工作。这个想法是用某种逻辑“包装”现有的解组器，以将其“重新定位”到您的类型。
 
-Usually what you want to do is to transform the output of some existing unmarshaller and convert it to your type.
-For this type of unmarshaller transformation Akka HTTP defines these methods:
+通常，您要做的是转换一些现有解组器的输出并将其转换为您的类型。对于此类解组器转换，Akka HTTP定义了以下方法：
 
 @@@ div { .group-scala }
  * `baseUnmarshaller.transform`
@@ -117,15 +99,13 @@ For this type of unmarshaller transformation Akka HTTP defines these methods:
  * `Unmarshaller.forMediaTypes` (to derive from a @apidoc[HttpEntity] unmarshaller)
 @@@
 
-The method signatures should make their semantics relatively clear.
+方法签名应该使它们的语义相对清晰。
 
-## Using Unmarshallers
+## 使用解组器
 
-In many places throughout Akka HTTP unmarshallers are used implicitly, e.g. when you want to access the @ref[entity](../routing-dsl/directives/marshalling-directives/entity.md)
-of a request using the @ref[Routing DSL](../routing-dsl/index.md).
+在Akka的许多地方，HTTP解组器都是隐式使用的，例如，当您想使用 @ref[路由DSL](../routing-dsl/index.md) 访问请求的 @ref[实体](../routing-dsl/directives/marshalling-directives/entity.md) 时。
 
-However, you can also use the unmarshalling infrastructure directly if you wish, which can be useful for example in tests.
-The best entry point for this is the @scala[`akka.http.scaladsl.unmarshalling.Unmarshal` object]@java[`akka.http.javadsl.unmarshalling.StringUnmarshallers` class], which you can use like this:
+但是，您也可以根据需要直接使用解组基础结构，这在测试中很有用。它的最好的入口点是 @scala[`akka.http.scaladsl.unmarshalling.Unmarshal`对象]@java[`akka.http.javadsl.unmarshalling.StringUnmarshallers` class]，你可以这样使用：
 
 Scala
 :  @@snip [UnmarshalSpec.scala]($test$/scala/docs/http/scaladsl/UnmarshalSpec.scala) { #use-unmarshal }

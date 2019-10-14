@@ -1,4 +1,4 @@
-# Caching
+# 缓冲
 
 Akka HTTP's caching support provides a lightweight and fast in-memory caching
 functionality based on futures. The primary use-case is the "wrapping" of an

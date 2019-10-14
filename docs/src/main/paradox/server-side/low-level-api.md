@@ -189,7 +189,7 @@ Java
 
 Note that this is when the TCP connection is closed correctly, if the client just goes away, for example because of
 a network failure, it will not be seen as this kind of stream failure. It will instead be detected through the
-@ref[idle timeout](../common/timeouts.md#timeouts)).
+@ref[idle timeout](../common/timeouts.md#超时)).
 
 
 These failures can be described more or less infrastructure related, they are failing bindings or connections.

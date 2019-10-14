@@ -1,15 +1,12 @@
-## The URI model
+## URI模型
 
-Akka HTTP offers its own specialised @apidoc[Uri] model class which is tuned for both performance and idiomatic usage within
-other types of the HTTP model. For example, an @apidoc[HttpRequest]'s target URI is parsed into this type, where all character
-escaping and other URI specific semantics are applied.
+Akka HTTP提供了自己的专用 @apidoc[Uri] 模型类，该类针对其他类型的HTTP模型中的性能和惯用用法进行了调整。例如，将 @apidoc[HttpRequest] 的目标URI解析为这种类型，其中应用了所有字符转义和其他URI特定的语义。
 
-### Parsing a URI string
+### 解析URI字符串
 
-We follow [RFC 3986](https://tools.ietf.org/html/rfc3986#section-1.1.2) to implement the URI parsing rules.
-When you try to parse a URI string, Akka HTTP internally creates an instance of the @apidoc[Uri] class, which holds the modeled URI components inside.
+我们遵循[RFC 3986](https://tools.ietf.org/html/rfc3986#section-1.1.2)来实现URI解析规则。当您尝试解析URI字符串时，Akka HTTP会在内部创建 @apidoc[Uri] 类的实例，其中包含建模的URI组件。
 
-For example, the following creates an instance of a simple valid URI:
+例如，以下代码创建一个简单的有效URI的实例：
 
 Scala
 :   
@@ -23,9 +20,7 @@ Java
     Uri.create("http://localhost");
     ```
 
-
-Below are some more examples of valid URI strings, and how you can construct a @apidoc[Uri] model class instances
-@scala[,using `Uri.from()` method by passing `scheme`, `host`, `path` and `query` parameters].
+下面是有效的URI字符串的一些例子，以及如何构建一个 @apidoc[Uri] 模型类的实例 @scala[，使用 `Uri.from()` 方法，通过传递 `scheme`, `host`, `path` 和 `query` 参数]
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #valid-uri-examples }
@@ -33,8 +28,7 @@ Scala
 Java
 :   @@snip [UriTest.scala]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #valid-uri-examples }
 
-For exact definitions of the parts of a URI, like `scheme`, `path` and `query` refer to [RFC 3986](https://tools.ietf.org/html/rfc3986#section-1.1.2).
-Here's a little overview:
+对于URI的部件的确切定义，例如 `scheme`，`path` 和 `query`，参考[RFC 3986](https://tools.ietf.org/html/rfc3986#section-1.1.2)。以下是一些概述：
 
 ```
   foo://example.com:8042/over/there?name=ferret#nose
@@ -46,8 +40,7 @@ scheme     authority       path        query   fragment
   urn:example:animal:ferret:nose
 ```
 
-For "special" characters in URI, you typically use percent encoding like below.
-Percent encoding is discussed in more detail in the @ref[Query String in URI](#query-string-in-uri) section.
+对于URI中的"特殊"字符，通常使用如下所示的百分号编码。在 @ref[URI中的查询字符串](#uri中的查询字符串) 部分中将更详细地讨论百分号编码。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #dont-double-decode }
@@ -56,9 +49,9 @@ Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #dont-double-decode }
 
 
-#### Invalid URI strings and IllegalUriException
+#### 无效的URI字符串和IllegalUriException
 
-When an invalid URI string is passed to `Uri()` as below, an `IllegalUriException` is thrown.
+当一个无效的URI字符串传递给`Uri()`时，或抛出一个`IllegalUriException`。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #illegal-cases-immediate-exception }
@@ -66,9 +59,9 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #illegal-scheme #illegal-userinfo #illegal-percent-encoding #illegal-path #illegal-path-with-control-char }
 
-#### Directives to extract URI components
+#### 提取URI组件的指令
 
-To extract URI components with directives, see following references:
+要使用指令提取URI组件，请参阅以下参考资料：
 
 * @ref:[extractUri](../routing-dsl/directives/basic-directives/extractUri.md)
 * @ref:[extractScheme](../routing-dsl/directives/scheme-directives/extractScheme.md)
@@ -76,28 +69,21 @@ To extract URI components with directives, see following references:
 * @ref:[PathDirectives](../routing-dsl/directives/path-directives/index.md)
 * @ref:[ParameterDirectives](../routing-dsl/directives/parameter-directives/index.md)
 
-### Obtaining the raw request URI
+### 获取原始请求URI
 
-Sometimes it may be needed to obtain the "raw" value of an incoming URI, without applying any escaping or parsing to it.
-While this use case is rare, it comes up every once in a while. It is possible to obtain the "raw" request URI in Akka
-HTTP Server side by turning on the `akka.http.server.raw-request-uri-header` flag.
-When enabled, a `Raw-Request-URI` header will be added to each request. This header will hold the original raw request's
-URI that was used. For an example check the reference configuration.
+有时可能需要获取传入URI的“原始”值，而不对其应用任何转义或解析。尽管这种用例很少见，但偶尔也会出现。可以在Akka HTTP服务器端获得“原始”请求URI，通过打开`akka.http.server.raw-request-uri-header`标记。可以在Akka HTTP Server端获取“原始”请求URI 。启用后，一个`Raw-Request-URI`报头将添加到每个请求。该报头将保存使用的原来的原始请求的URI。有关示例，请检查参考配置。
 
-### Query string in URI
+### URI中的查询字符串
 
-Although any part of URI can have special characters, it is more common for the query string in URI to have special characters,
-which are typically [percent encoded](https://en.wikipedia.org/wiki/Percent-encoding).
+尽管URI的任何部分都可以包含特殊字符，但URI中的查询字符串更常见的具有特殊字符，这些字符通常是[百分号编码](https://en.wikipedia.org/wiki/Percent-encoding)的。
 
-@scala[@apidoc[Uri] class's `query()` method]@java[The method `Uri::query()`] returns the query string of the URI, which is modeled in an instance of the `Query` class.
-When you instantiate a @apidoc[Uri] class by passing a URI string, the query string is stored in its raw string form.
-Then, when you call the `query()` method, the query string is parsed from the raw string.
+@scala[@apidoc[Uri]类的`query()`方法]@java[The method `Uri::query()`]返回URI的查询字符串，它是在`Query`类的实例中建模的。
+当你通过传递URI字符串实例化一个 @apidoc[Uri] 类时，查询字符串以其原始字符串形式存储。然后，当您调用`query()`方法时，将从原始字符串中解析出查询字符串。
 
-The below code illustrates how valid query strings are parsed.
-Especially, you can check how percent encoding is used and how special characters like `+` and `;` are parsed.
+以下代码说明了如何解析有效的查询字符串。特别是，您可以检查如何使用百分号编码，以及如何解析特殊字符，比如`+`和`;`。
 
 @@@ note
-The `mode` parameter to `Query()` and `Uri.query()` is discussed in @ref[Strict and Relaxed Mode](#strict-and-relaxed-mode).
+`mode`参数，用于`Query()`和`Uri.query()`，在 @ref[严格和宽松模式](#严格和宽松模式) 中讨论。
 @@@
 
 Scala
@@ -113,24 +99,23 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-strict-mode }
 
-Note that:
+注意：
 
 ```
   Uri("http://localhost?a=b").query()
 ```
 
-is equivalent to:
+等效于：
 
 ```
   Query("a=b")
 ```
 
-As in the [section 3.4 of RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.4),
-some special characters like "/" and "?" are allowed inside a query string, without escaping them using ("%") signs.
+正如[章节3.4 of RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.4)，一些特殊的字符，如"/"和"?"被允许在查询字符串里面，不使用("%")的符号来避免他们。
 
-> The characters slash ("/") and question mark ("?") may represent data within the query component.
+> 斜杠("/")和问号("?")可以表示查询组件中的数据。
 
-"/" and "?" are commonly used when you have a URI whose query parameter has another URI.
+当您的URI的查询参数具有另一个URI时，通常使用"/"和"?"。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-strict-without-percent-encode }
@@ -138,7 +123,7 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-strict-without-percent-encode }
 
-However, some other special characters can cause `IllegalUriException` without percent encoding as follows.
+但是，某些其他特殊字符可能导致`IllegalUriException`，如果不按如下所示进行百分好编码。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-strict-mode-exception-1 }
@@ -153,10 +138,9 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-strict-mode-exception-2 }
 
-#### Strict and Relaxed Mode
+#### 严格和宽松模式
 
-The `Uri.query()` method and `Query()` take a parameter `mode`, which is either `Uri.ParsingMode.Strict` or `Uri.ParsingMode.Relaxed`.
-Switching the mode gives different behavior on parsing some special characters in URI.
+`Uri.query()`方法和`Query()`采用一个参数`mode`，它是`Uri.ParsingMode.Strict`或`Uri.ParsingMode.Relaxed`。切换`mode`会给解析URI中的一些特殊字符带来不同的行为。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-relaxed-mode }
@@ -164,7 +148,7 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-relaxed-definition }
 
-The below two cases threw `IllegalUriException` when you specified the `Strict` mode,
+以下两种情况，当你指定`Strict`模式时会抛出`IllegalUriException`：
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-strict-mode-exception-1 }
@@ -172,7 +156,7 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-strict-mode-exception-1 #query-strict-mode-exception-2 }
 
-but the `Relaxed` mode parses them as they are.
+但是`Relaxed`模式会按原样解析它们。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-relaxed-mode-success }
@@ -180,7 +164,7 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-relaxed-mode-success }
 
-However, even with the `Relaxed` mode, there are still invalid special characters which require percent encoding.
+但是，即使使用`Relaxed`模式，仍然有无效的特殊字符需要百分比编码。
 
 Scala
 :   @@snip [UriSpec.scala]($akka-http$/akka-http-core/src/test/scala/akka/http/scaladsl/model/UriSpec.scala) { #query-relaxed-mode-exception }
@@ -188,7 +172,7 @@ Scala
 Java
 :   @@snip [UriTest.java]($akka-http$/akka-http-core/src/test/java/akka/http/javadsl/model/UriTest.java) { #query-relaxed-mode-exception-1 }
 
-Other than specifying the `mode` in the parameters, like when using directives, you can specify the `mode` in your configuration as follows.
+除了在参数中指定`mode`之外(例如使用指令时)，您可以在配置中指定`mode`，如下所示。
 
 ```
     # Sets the strictness mode for parsing request target URIs.
@@ -202,11 +186,11 @@ Other than specifying the `mode` in the parameters, like when using directives, 
     uri-parsing-mode = strict
 ```
 
-To access the raw, unparsed representation of the query part of a URI use the `rawQueryString` member of the @apidoc[Uri] class.
+要访问URI的查询部分的原始，未解析过的表示，请使用 @apidoc[Uri] 类的`rawQueryString`成员。
 
-#### Directives to extract query parameters
+#### 提取查询参数的指令
 
-If you want to use directives to extract query parameters, see below pages.
+如果你要使用指令提取查询参数，请参阅以下页面。
 
 * @ref:[parameters](../routing-dsl/directives/parameter-directives/parameters.md)
 * @ref:[parameter](../routing-dsl/directives/parameter-directives/parameter.md)

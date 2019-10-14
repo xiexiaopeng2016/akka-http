@@ -189,5 +189,5 @@ Java
 
 ## Consuming streaming JSON on client-side
 
-For consuming such streaming APIs with, for example, JSON responses refer to @ref[Consuming JSON Streaming style APIs](../common/json-support.md#consuming-json-streaming-style-apis)
+For consuming such streaming APIs with, for example, JSON responses refer to @ref[消费JSON流样式API](../common/json-support.md#消费json流样式api)
 documentation in the JSON support section.
