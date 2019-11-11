@@ -1,6 +1,6 @@
 # 指令
 
-“指令”是用于创建任意复杂的 @ref[路线结构](../routes.md)的小构件。Akka HTTP已经预定义了大量指令，您也可以轻松地构建自己的指令:
+“指令”是用于创建任意复杂的 @ref[路由结构](../routes.md) 的小构件。Akka HTTP已经预定义了大量指令，您也可以轻松地构建自己的指令:
 
 @@toc { depth=1 }
 
@@ -71,7 +71,7 @@ val b: Route = { ctx =>
 }
 ```
 
-`a`和`b`之间的区别在于何时执行`println`语句。在`a`的情况下，当路由被构造时它被执行*一次*，而在`b`情况下，路由*运行*时，它每次都被执行。
+`a`和`b`之间的区别在于何时执行`println`语句。在`a`的情况下，当路由被构造时它被执行 *一次*，而在`b`情况下，路由 *运行* 时，它每次都被执行。
 
 使用 @ref[complete](route-directives/complete.md)指令，可以达到以下相同的效果：
 
@@ -87,7 +87,7 @@ val b = complete {
 }
 ```
 
-这是可行的，因为 @ref[complete](route-directives/complete.md)指令的参数是*按名称*评估的，即每次运行生成的路由时都会对其进行重新评估。
+这是可行的，因为 @ref[complete](route-directives/complete.md)指令的参数是 *按名称* 评估的，即每次运行生成的路由时都会对其进行重新评估。
 
 让我们更进一步：
 
@@ -126,9 +126,9 @@ val route =
   )
 ```
 
-在这里， @ref[get](method-directives/get.md)指令的内部路由被编写为显式函数字面量。
+在这里, @ref[get](method-directives/get.md)指令的内部路由被编写为显式函数字面量。
 
-然而，正如您从这些示例中看到的，使用指令而不是"手工"构建路由会使代码更加简洁，因此更具可读性和可维护性。另外，它提供了更好的可组合性(正如您将在接下来的部分中看到的)。因此，在使用Akka HTTP的路由DSL时，您几乎永远都不必回过头来直接操作@ref[RequestContext](../routes.md#requestcontext)通过 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]函数字面量来创建路由。
+然而，正如您从这些示例中看到的，使用指令而不是"手工"构建路由会使代码更加简洁，因此更具可读性和可维护性。另外，它提供了更好的可组合性(正如您将在接下来的部分中看到的)。因此，在使用Akka HTTP的路由DSL时，您几乎永远都不必回过头来直接操作 @ref[RequestContext](../routes.md#requestcontext)通过 @scala[@scaladoc[Route](akka.http.scaladsl.server.index#Route=akka.http.scaladsl.server.RequestContext=%3Escala.concurrent.Future[akka.http.scaladsl.server.RouteResult])]@java[@apidoc[Route]]函数字面量来创建路由。
 
 @@@
 
@@ -189,15 +189,10 @@ directiveName(arguments [, ...], (extractions [, ...]) -> {
 
 指令可以执行以下一项或多项操作：
 
-
-
-
-
-
  * 在传递到其内部路由之前，将传入的 @apidoc[RequestContext]进行转换(即，修改请求)
  * 根据某些逻辑过滤 @apidoc[RequestContext]，即仅传递某些请求而拒绝其他请求
- * 从@apidoc[RequestContext]中提取值，并将其作为"extractions"提供给其内部路由
- * 将一些逻辑链接到@ref[RouteResult](../routes.md#routeresult)，将来的转换链(即修改响应或拒绝)
+ * 从 @apidoc[RequestContext] 中提取值，并将其作为"extractions"提供给其内部路由
+ * 将一些逻辑链接到 @ref[RouteResult](../routes.md#routeresult)，将来的转换链(即修改响应或拒绝)
  * 完成(complete)请求
 
 这意味着一个`Directive`完全包装了其内部路由的功能，并且可以在请求和响应端(或两者)应用任意复杂的转换。
@@ -212,7 +207,7 @@ Scala
 Java
 :  @@snip [DirectiveExamplesTest.java]($test$/java/docs/http/javadsl/server/DirectiveExamplesTest.java) { #example1 }
 
-在这里，`get`和`put`指令@scala[与`concat`组合器]@java[使用`orElse`方法]链接在一起，形成了更高级别的路由，该路由充当了`path`指令的内部路由。让我们用以下方式重写它：
+在这里，`get`和`put`指令 @scala[与`concat`组合器]@java[使用`orElse`方法]链接在一起，形成了更高级别的路由，该路由充当了`path`指令的内部路由。让我们用以下方式重写它：
 
 Scala
 :  @@snip [DirectiveExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/DirectiveExamplesSpec.scala) { #getOrPut }
@@ -305,8 +300,7 @@ Notice how you could adjust the indentation in these last two examples to have a
 @@@ 
 
 @@@ note { .group-scala }
-Gotcha: forgetting the `~` (tilde) character in between directives can result in perfectly valid
-Scala code that compiles but does not work as expected. What would be intended as a single expression would actually be multiple expressions, and only the final one would be used as the result of the parent directive. Because of this, the recommended way to compose routes is with the the `concat` combinator.
+不可思议：忘记指令之间的`~`(波浪号)字符会导致完全有效的Scala代码能够编译，但无法按预期工作。原本打算作为单个表达式，实际上是多个表达式，而且只有最后一个表达式将作为父指令的结果使用。因此，建议的组合路由方法是使用`concat`组合器。
 @@@
 
 @@@ div { .group-scala }
@@ -319,9 +313,9 @@ Scala code that compiles but does not work as expected. What would be intended a
 
 ## 指令的类型安全
 
-当您使用@scala[`|`和`&`操作符]@java[`anyOf`和`allOf`方法]组合指令时，路由DSL确保所有提取均按预期进行，并且在编译时强制执行逻辑约束。
+当您使用 @scala[`|`和`&`操作符]@java[`anyOf`和`allOf`方法]组合指令时，路由DSL确保所有提取均按预期进行，并且在编译时强制执行逻辑约束。
 
-例如，您不能@scala[`|`]@java[`anyOf`]一个指令生成一个提取：
+例如，您不能 @scala[`|`]@java[`anyOf`]一个指令生成一个提取：
 
 Scala
 :   ```scala
@@ -379,7 +373,7 @@ allOf(this::extractScheme, this::extractMethod, (scheme, method) -> ...)
 
 @@@ div { .group-scala }
 
-## Automatic Tuple extraction (flattening)
+## 自动元组提取(扁平化)
 
 在 @ref[基础](#基础) 和 @ref[组合指令](#组合指令) 中描述的便捷Scala DSL语法使内部的元组提取成为可能. 让我们通过例子来看看它是如何工作的。
  
@@ -392,7 +386,7 @@ val route =
     }
   }
 ```
-看看上面的代码， `onSuccess(futureOfInt)` 返回一个 `Directive1[Int] = Directive[Tuple1[Int]]`。
+看看上面的代码，`onSuccess(futureOfInt)` 返回一个 `Directive1[Int] = Directive[Tuple1[Int]]`。
 
 ```scala
 val futureOfTuple2: Future[Tuple2[Int,Int]] = Future.successful( (1,2) )
@@ -404,8 +398,8 @@ val route =
   }
 ```
 
-类似地， `onSuccess(futureOfTuple2)` 返回一个 `Directive1[Tuple2[Int,Int]] = Directive[Tuple1[Tuple2[Int,Int]]]`,
-但是这个会自动转换成 `Directive[Tuple2[Int,Int]]` 以避免嵌套元组。
+类似地，`onSuccess(futureOfTuple2)` 返回一个`Directive1[Tuple2[Int,Int]] = Directive[Tuple1[Tuple2[Int,Int]]]`，
+但是这个会自动转换成`Directive[Tuple2[Int,Int]]`以避免嵌套元组。
 
 ```scala
 val futureOfUnit: Future[Unit] = Future.successful( () )

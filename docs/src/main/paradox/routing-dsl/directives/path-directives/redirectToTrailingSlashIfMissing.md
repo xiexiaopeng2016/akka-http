@@ -2,13 +2,13 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #redirectToTrailingSlashIfMissing }
 
 @@@
 
-## Description
+## 描述
 
 If the requested path does not end with a trailing `/` character,
 redirects to the same path followed by such trailing slash.

@@ -93,7 +93,7 @@ Scala
 Java
 :   @@snip [ModelDocTest.java]($test$/java/docs/http/javadsl/ModelDocTest.java) { #construct-response }
 
-除了从固定`String`或 @apidoc[akka.util.ByteString] 创建实体的简单 @scala[@apidoc[HttpEntity]构造函数]@java[`HttpEntities.create` methods] 之外，Akka HTTP模型还定义了许多 @apidoc[HttpEntity] 子类，这些子类允许将主体数据指定为字节流。@java[All of these types can be created using the method on `HttpEntites`.]
+除了从固定`String`或 @apidoc[akka.util.ByteString] 创建实体的简单 @scala[@apidoc[HttpEntity]构造函数]@java[`HttpEntities.create` methods] 之外，Akka HTTP模型还定义了许多 @apidoc[HttpEntity] 子类，这些子类允许将主体数据指定为字节流。 @java[All of these types can be created using the method on `HttpEntites`.]
 
 <a id="httpentity"></a>
 ## HttpEntity
@@ -107,7 +107,7 @@ Java
 : 常规的，未分块(unchunked) HTTP/1.1消息实体。它具有已知的长度，并将其数据展示为一个只能实现一次的 @apidoc[Source[ByteString, \_]] 。如果提供的源产生的字节数与指定的字节数不完全相同，则会出现错误。 @scala[`Strict`]@java[`HttpEntityStrict`] 和 @scala[`Default`]@java[`HttpEntityDefault`] 的差别是一个API-only one。在线上(wire)，两种实体看起来都相同。
 
 @scala[HttpEntity.Chunked]@java[HttpEntityChunked]
-: 针对HTTP/1.1 [分块内容](https://tools.ietf.org/html/rfc7230#section-4.1) (即带`Transfer-Encoding: chunked`发送) 的模型。内容长度未知，且单独的块被呈现为一个 @scala[`Source[HttpEntity.ChunkStreamPart]`]@java[@apidoc[Source[ChunkStreamPart, ?]]]。`ChunkStreamPart`是一个非空的 @scala[`Chunk`]@java[chunk] 或 @scala[一个`LastChunk`]@java[the empty last chunk] 包含可选的trailer报头。流由零个或多个 @scala[`Chunked`]@java[non-empty chunks] 部分组成，可由一个可选的 @scala[`LastChunk`部分]@java[last chunk] 终止。
+: 针对HTTP/1.1 [分块内容](https://tools.ietf.org/html/rfc7230#section-4.1) (即带`Transfer-Encoding: chunked`发送) 的模型。内容长度未知，且单独的块被呈现为一个 @scala[`Source[HttpEntity.ChunkStreamPart]`]@java[@apidoc[Source[ChunkStreamPart, ?]]]。`ChunkStreamPart`是一个非空的 @scala[`Chunk`]@java[chunk] 或 @scala[一个`LastChunk`]@java[the empty last chunk]，其包含可选的trailer报头。流由零个或多个 @scala[`Chunked`]@java[non-empty chunks] 部分组成，可由一个可选的 @scala[`LastChunk`部分]@java[last chunk] 终止。
 
 @scala[HttpEntity.CloseDelimited]@java[HttpEntityCloseDelimited]
 : 长度未知的未分块的实体，其通过关闭连接(`Connection: close`)隐式地分隔。内容数据表示为一个 @apidoc[Source[ByteString, \_]]。由于必须在发送这种类型的实体后关闭连接，所以只能在服务器端使用它来发送响应。此外，`CloseDelimited`实体的主要目的是与HTTP/1.0对等点(peers)兼容，后者不支持分块传输编码。如果您正在构建一个新的应用程序，并且没有受到遗留需求的限制，那么您不应该依赖于`CloseDelimited`实体，因为隐式的terminate-by-connection-close不是一种发送响应结束信号的可靠方式，尤其是在存在代理的情况下。此外，这种类型的实体可以防止连接重用，从而严重降低性能。使用 @scala[`HttpEntity.Chunked`]@java[`HttpEntityChunked`] 代替!
@@ -252,7 +252,7 @@ Strict-Transport-Security
 
 有时，您可能需要对不属于HTTP的自定义头类型建模，但仍然像内置类型一样能够尽可能方便地使用它。
 
-因为与头信息交互的方式多种多样(即试图@scala(匹配)@java[convert]一个 @apidoc[CustomHeader] @scala[反对]@java[to]一个 @apidoc[RawHeader]或其他方式等)，Akka HTTP提供了自定义标题类型的一个辅助 @scala[特质]@java(类) @scala[和它们的伴生类]。
+因为与头信息交互的方式多种多样(即试图 @scala(匹配)@java[convert]一个 @apidoc[CustomHeader] @scala[反对]@java[to]一个 @apidoc[RawHeader]或其他方式等)，Akka HTTP提供了自定义标题类型的一个辅助 @scala[特质] @java(类) @scala[和它们的伴生类]。
 
 感谢扩展 @apidoc[ModeledCustomHeader]，而不是简单的 @apidoc[CustomHeader] @scala[这样的header可以匹配]@java[以下方法由您使用]:
 

@@ -2,33 +2,27 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #pathSuffix }
 
 @@@
 
-## Description
+## 描述
 
-Matches and consumes a suffix of the unmatched path of the @apidoc[RequestContext] against the given `PathMatcher`,
-potentially extracts one or more values (depending on the type of the argument).
+针对给定的`PathMatcher`匹配并消费 @apidoc[RequestContext] 的未匹配路径的一个后缀，可能会提取一个或多个值(取决于参数的类型)。
 
-This directive filters incoming requests based on the part of their URI that hasn't been matched yet by other
-potentially existing path matching directives on higher levels of the routing structure.
-Its one parameter is usually an expression evaluating to a `PathMatcher` instance (see also: @ref[The PathMatcher DSL](../../path-matchers.md)).
+该指令过滤传入请求，基于尚未被更高级别路由结构上其他可能存在的路径匹配指令匹配的URI部分。它的一个参数通常是对一个`PathMatcher`实例求值的表达式(另请参见: @ref[路径匹配器DSL](../../path-matchers.md))。
 
-As opposed to @ref[pathPrefix](pathPrefix.md) this directive matches and consumes the unmatched path from the right, i.e. the end.
+与 @ref[pathPrefix](pathPrefix.md) 相反，这个指令从右边(即结尾)匹配并消费未匹配的路径。
 
 @@@ warning { title="Caution" }
-For efficiency reasons, the given `PathMatcher` must match the desired suffix in reversed-segment
-order, i.e. `pathSuffix("baz" / "bar")` would match `/foo/bar/baz`! The order within a segment match is
-not reversed.
+出于效率方面的考虑，给定`PathMatcher`必须以相反的段顺序匹配所需的后缀，即`pathSuffix("baz" / "bar")`将会匹配`/foo/bar/baz`！段匹配中的顺序不会颠倒。
 @@@
 
-Depending on the type of its `PathMatcher` argument the `pathPrefix` directive extracts zero or more values from
-the URI. If the match fails the request is rejected with an @ref[empty rejection set](../../rejections.md#empty-rejections).
+根据其`PathMatcher`参数的类型，`pathSuffix`指令从URI中提取零个或多个值。如果匹配失败，则使用 @ref[空拒绝集](../../rejections.md#empty-rejections) 拒绝请求。
 
-## Example
+## 示例
 
 Scala
 :  @@snip [PathDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/PathDirectivesExamplesSpec.scala) { #completeWithUnmatchedPath #pathSuffix- }

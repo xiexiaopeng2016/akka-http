@@ -2,31 +2,25 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #rawPathPrefixTest }
 
 @@@
 
-## Description
+## 描述
 
-Checks whether the unmatched path of the @apidoc[RequestContext] has a prefix matched by the given `PathMatcher`.
-Potentially extracts one or more values (depending on the type of the argument) but doesn't consume its match from
-the unmatched path.
+检查 @apidoc[RequestContext] 的未匹配路径是否具有与给定`PathMatcher`匹配的前缀。可能会提取一个或多个值(取决于参数的类型)，但不消费未匹配路径中的匹配项。
 
-This directive is very similar to the @ref[pathPrefix](pathPrefix.md) directive with the one difference that the path prefix
-it matched (if it matched) is *not* consumed. The unmatched path of the @apidoc[RequestContext] is therefore left as
-is even in the case that the directive successfully matched and the request is passed on to its inner route.
+此指令与 @ref[pathPrefix](pathPrefix.md) 指令非常相似，唯一的区别是它匹配的路径前缀(如果匹配)*不*会被消费。因此，即使在指令成功匹配并将请求传递到其内部路由的情况下，也仍然保留了 @apidoc[RequestContext] 的未匹配路径。
 
-For more info on how to create a `PathMatcher` see @ref[The PathMatcher DSL](../../path-matchers.md).
+有关如何创建一个`PathMatcher`的更多信息，请参见 @ref[路径匹配器DSL](../../path-matchers.md)。
 
-As opposed to its @ref[pathPrefixTest](pathPrefixTest.md) counterpart `rawPathPrefixTest` does *not* automatically add a leading slash
-to its `PathMatcher` argument. Rather its `PathMatcher` argument is applied to the unmatched path as is.
+与 @ref[pathPrefixTest](pathPrefixTest.md) 相反，对应的`rawPathPrefixTest` *不* 会自动添加一个前导斜杠到其`PathMatcher`参数。而是将其`PathMatcher`参数按原样应用于未匹配的路径。
 
-Depending on the type of its `PathMatcher` argument the `rawPathPrefixTest` directive extracts zero or more values
-from the URI. If the match fails the request is rejected with an @ref[empty rejection set](../../rejections.md#empty-rejections).
+根据它的`PathMatcher`参数的类型，`rawPathPrefixTest`指令从URI中提取零个或多个值。如果匹配失败，则使用 @ref[空拒绝集](../../rejections.md#empty-rejections) 拒绝请求。
 
-## Example
+## 示例
 
 Scala
 :  @@snip [PathDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/PathDirectivesExamplesSpec.scala) { #completeWithUnmatchedPath #rawPathPrefixTest- }

@@ -1,4 +1,4 @@
-# Custom Directives
+# 自定义指令
 
 Part of the power of akka-http directives comes from the ease with which it’s possible to define
 custom directives at differing levels of abstraction.

@@ -1,14 +1,11 @@
-# BasicDirectives
+# 基础指令
 
-Basic directives are building blocks for building @ref[Custom Directives](../custom-directives.md). As such they
-usually aren't used in a route directly but rather in the definition of new directives.
+基本指令是构建 @ref[自定义指令](../custom-directives.md) 的构建块。因此，它们通常不直接用于路由，而是用于定义新指令。
 
 <a id="providedirectives"></a>
-## Providing Values to Inner Routes
+## 为内部路由提供值
 
-These directives provide values to the inner routes with extractions. They can be distinguished
-on two axes: a) provide a constant value or extract a value from the @apidoc[RequestContext] b) provide
-a single value or a tuple of values.
+这些指令通过提取为内部路由提供值。它们可以在两个轴上进行区分：a) 提供一个恒定值或从 @apidoc[RequestContext]中提取一个值  b) 提供一个单个值或一个元组。
 
 >
  * @ref[extract](extract.md)
@@ -31,7 +28,7 @@ a single value or a tuple of values.
  * @ref[tprovide](tprovide.md)
 
 <a id="request-transforming-directives"></a>
-## Transforming the Request(Context)
+## 转换请求(上下文)
 
 >
  * @ref[mapRequest](mapRequest.md)
@@ -45,10 +42,9 @@ a single value or a tuple of values.
  * @ref[toStrictEntity](toStrictEntity.md)
 
 <a id="response-transforming-directives"></a>
-## Transforming the Response
+## 转变回应
 
-These directives allow to hook into the response path and transform the complete response or
-the parts of a response or the list of rejections:
+这些指令允许挂钩(hook)到响应路径，并转换完整的响应或响应的一部分或拒绝列表：
 
 >
  * @ref[mapResponse](mapResponse.md)
@@ -56,9 +52,9 @@ the parts of a response or the list of rejections:
  * @ref[mapResponseHeaders](mapResponseHeaders.md)
 
 <a id="result-transformation-directives"></a>
-## Transforming the RouteResult
+## 转换RouteResult
 
-These directives allow to transform the RouteResult of the inner route.
+这些指令允许转换内部路由的RouteResult。
 
 >
  * @ref[cancelRejection](cancelRejection.md)
@@ -72,13 +68,13 @@ These directives allow to transform the RouteResult of the inner route.
  * @ref[recoverRejections](recoverRejections.md)
  * @ref[recoverRejectionsWith](recoverRejectionsWith.md)
 
-## Other
+## 其它
 
 >
  * @ref[mapInnerRoute](mapInnerRoute.md)
  * @ref[pass](pass.md)
 
-## Alphabetically
+## 按字母顺序
 
 @@toc { depth=1 }
 

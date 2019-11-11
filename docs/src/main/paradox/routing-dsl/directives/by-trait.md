@@ -1,80 +1,80 @@
-# Predefined Directives (by trait)
+# 预定义指令(按特质)
 
-All predefined directives are organized into traits that form one part of the overarching @apidoc[Directives] trait.
+所有预定义的指令都组织成特质，它们构成总体 @apidoc[Directives] 特质的一部分。
 
 <a id="request-directives"></a>
-## Directives filtering or extracting from the request
+## 指令过滤或从请求中提取
 
 @ref[MethodDirectives](method-directives/index.md)
-:   Filter and extract based on the request method.
+:   基于请求方法进行筛选和提取。
 
 @ref[HeaderDirectives](header-directives/index.md)
-:   Filter and extract based on request headers.
+:   基于请求头进行过滤和提取。
 
 @ref[PathDirectives](path-directives/index.md)
-:   Filter and extract from the request URI path.
+:   从请求URI路径中过滤和提取。
 
 @ref[HostDirectives](host-directives/index.md)
-:   Filter and extract based on the target host.
+:   基于目标主机进行过滤和提取。
 
 @ref[ParameterDirectives](parameter-directives/index.md), @ref[FormFieldDirectives](form-field-directives/index.md)
-:   Filter and extract based on query parameters or form fields (of Content-Type `application/x-www-form-urlencoded` or `multipart/form-data`).
+:   根据查询参数或表单字段(Content-Type `application/x-www-form-urlencoded`或`multipart/form-data`)过滤和提取。
 
 @ref[CodingDirectives](coding-directives/index.md)
-:   Filter and decode compressed request content.
+:   过滤和解码压缩的请求内容。
 
 @ref[Marshalling Directives](marshalling-directives/index.md)
-:   Extract the request entity.
+:   提取请求实体。
 
 @ref[SchemeDirectives](scheme-directives/index.md)
-:   Filter and extract based on the request scheme.
+:   根据请求方案进行过滤和提取。
 
 @ref[SecurityDirectives](security-directives/index.md)
-:   Handle authentication data from the request.
+:   处理来自请求的身份验证数据。
 
 @ref[CookieDirectives](cookie-directives/index.md)
-:   Filter and extract cookies.
+:   过滤和提取cookie。
 
 @ref[BasicDirectives](basic-directives/index.md) and @ref[MiscDirectives](misc-directives/index.md)
-:   Directives handling request properties.
+:   处理请求属性的指令。
 
 @ref[FileUploadDirectives](file-upload-directives/index.md)
-:   Handle file uploads.
+:   处理文件上传。
 
 <a id="response-directives"></a>
-## Directives creating or transforming the response
+## 创建或转换响应的指令
 
 @ref[CacheConditionDirectives](cache-condition-directives/index.md)
-:   Support for conditional requests (`304 Not Modified` responses).
+:   支持条件请求(`304 Not Modified`响应)。
 
 @ref[CachingDirectives](caching-directives/index.md)
-:   Support for caching expensive operations.
+:   支持缓存昂贵的操作。
 
 @ref[CookieDirectives](cookie-directives/index.md)
-:   Set, modify, or delete cookies.
+:   设置、修改或删除cookie。
 
 @ref[CodingDirectives](coding-directives/index.md)
-:   Compress responses.
+:   压缩响应。
 
 @ref[FileAndResourceDirectives](file-and-resource-directives/index.md)
-:   Deliver responses from files and resources.
+:   从文件和资源中交付响应。
 
 @ref[RangeDirectives](range-directives/index.md)
-:   Support for range requests (`206 Partial Content` responses).
+:   支持范围请求(`206 Partial Content`响应)。
 
 @ref[RespondWithDirectives](respond-with-directives/index.md)
-:   Change response properties.
+:   改变的响应特性。
 
 @ref[RouteDirectives](route-directives/index.md)
-:   Complete or reject a request with a response.
+:   使用响应完成或拒绝请求。
 
 @ref[BasicDirectives](basic-directives/index.md) and @ref[MiscDirectives](misc-directives/index.md)
-:   Directives handling or transforming response properties.
+:   指令处理或转换响应属性。
 
 @ref[TimeoutDirectives](timeout-directives/index.md)
-:   Configure request timeouts and automatic timeout responses.
+:   配置请求超时和自动超时响应。
 
-## List of predefined directives by trait
+## 按特质的预定义指令列表
 
 @@toc { depth=1 }
 

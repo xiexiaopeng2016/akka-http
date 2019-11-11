@@ -2,21 +2,21 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #redirectToNoTrailingSlashIfPresent }
 
 @@@
 
-## Description
+## 描述
 
-If the requested path does end with a trailing `/` character,
-redirects to the same path without that trailing slash..
+如果请求的路径的确以结尾`/`字符结尾，重定向到不包含结尾斜杠的相同路径。
 
-Redirects the HTTP Client to the same resource yet without the trailing `/`, in case the request contained it.
-When redirecting an HttpResponse with the given redirect response code (i.e. `MovedPermanently` or `TemporaryRedirect`
-etc.) as well as a simple HTML page containing a "*click me to follow redirect*" link to be used in case the client can not,
-or refuses to for security reasons, automatically follow redirects.
+重定向HTTP客户端到相同的资源，但不带结尾的`/`，以防请求包含它。
+
+当使用给定的重定向响应代码（即MovedPermanently或TemporaryRedirect等）重定向HttpResponse 以及包含“ 单击我跟随重定向 ”链接的简单HTML页面时，以防客户端无法访问或出于安全原因拒绝使用，自动跟随重定向。
+
+When redirecting an HttpResponse with the given redirect response code (i.e. `MovedPermanently` or `TemporaryRedirect` etc.) as well as a simple HTML page containing a "*click me to follow redirect*" link to be used in case the client can not, or refuses to for security reasons, automatically follow redirects.
 
 Please note that the inner paths **MUST NOT** end with an explicit trailing slash (e.g. `"things"./`)
 for the re-directed-to route to match.

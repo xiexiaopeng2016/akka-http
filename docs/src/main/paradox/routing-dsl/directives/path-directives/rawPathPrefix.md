@@ -2,28 +2,23 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #rawPathPrefix }
 
 @@@
 
-## Description
+## 描述
 
-Matches and consumes a prefix of the unmatched path of the @apidoc[RequestContext] against the given `PathMatcher`,
-potentially extracts one or more values (depending on the type of the argument).
+针对给定的`PathMatcher`匹配并消费一个 @apidoc[RequestContext] 的未匹配路径的前缀，可能会提取一个或多个值(取决于参数的类型)。
 
-This directive filters incoming requests based on the part of their URI that hasn't been matched yet by other
-potentially existing `rawPathPrefix` or @ref[pathPrefix](pathPrefix.md) directives on higher levels of the routing structure.
-Its one parameter is usually an expression evaluating to a `PathMatcher` instance (see also: @ref[The PathMatcher DSL](../../path-matchers.md)).
+该指令过滤传入请求，基于它的尚未被更高层次的路由结构上的其他可能存在的`rawPathPrefix`或 @ref[pathPrefix](pathPrefix.md) 指令匹配的URI部分。它的一个参数通常是对一个`PathMatcher`实例求值的表达式(另请参见: @ref[路径匹配器DSL](../../path-matchers.md))。
 
-As opposed to its @ref[pathPrefix](pathPrefix.md) counterpart `rawPathPrefix` does *not* automatically add a leading slash to its
-`PathMatcher` argument. Rather its `PathMatcher` argument is applied to the unmatched path as is. For a comparison between path directives check @ref[Overview of path directives](index.md#overview-path).
+与 @ref[pathPrefix](pathPrefix.md) 相反，对应的`rawPathPrefix`并 *不* 会自动添加一个前导斜杠到其`PathMatcher`参数。而是将其`PathMatcher`参数按原样应用于未匹配的路径。有关路径指令之间的比较，请查看 @ref[路径指令概述](index.md#overview-path)。
 
-Depending on the type of its `PathMatcher` argument the `rawPathPrefix` directive extracts zero or more values from
-the URI. If the match fails the request is rejected with an @ref[empty rejection set](../../rejections.md#empty-rejections).
+根据其`PathMatcher`参数的类型，`rawPathPrefix`指令从URI中提取零个或多个值。如果匹配失败，则使用 @ref[空拒绝集](../../rejections.md#empty-rejections) 拒绝请求。
 
-## Example
+## 示例
 
 Scala
 :  @@snip [PathDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/PathDirectivesExamplesSpec.scala) { #completeWithUnmatchedPath #rawPathPrefix- }

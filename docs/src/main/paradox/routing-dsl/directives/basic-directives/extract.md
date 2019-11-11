@@ -1,22 +1,20 @@
-# extract
+# 提取(extract)
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [BasicDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/BasicDirectives.scala) { #extract }
 
 @@@
 
-## Description
+## 描述
 
-The `extract` directive is used as a building block for @ref[Custom Directives](../custom-directives.md) to extract data from the
-@apidoc[RequestContext] and provide it to the inner route.
-@scala[It is a special case for extracting one value of the more general @ref[textract](textract.md) directive that can be used to extract more than one value.]
+`extract`指令用作 @ref[自定义指令](../custom-directives.md) 的构造块，用于从 @apidoc[RequestContext] 提取数据并将其提供给内部路由。这是一种比提取一个值更常见的特殊情况， @ref[textract](textract.md)指令可用于提取多个值。
 
-See @ref[Providing Values to Inner Routes](index.md#providedirectives) for an overview of similar directives.
+有关类似指令的概述，请参见为 @ref[为内部路由提供值](index.md#providedirectives)。
 
-## Example
+## 示例
 
 Scala
 :  @@snip [BasicDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/BasicDirectivesExamplesSpec.scala) { #extract0 }

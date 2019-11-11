@@ -2,40 +2,29 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #path }
 
 @@@
 
-## Description
+## 描述
 
-Matches the complete unmatched path of the @apidoc[RequestContext] against the given `PathMatcher`, potentially extracts
-one or more values (depending on the type of the argument).
+针对给定的`PathMatcher`匹配 @apidoc[RequestContext] 的完全未匹配路径，可能会提取一个或多个值(取决于参数的类型)。
 
-This directive filters incoming requests based on the part of their URI that hasn't been matched yet by other
-potentially existing @ref[pathPrefix](pathPrefix.md) directives on higher levels of the routing structure.
-Its one parameter is usually an expression evaluating to a `PathMatcher` instance (see also: @ref[The PathMatcher DSL](../../path-matchers.md)).
+这个指令过滤传入的请求，基于它们的URI中尚未被其他可能存在的 @ref[pathPrefix](pathPrefix.md) 指令匹配的部分，这些指令位于更高级别的路由结构。它的一个参数通常是一个对`PathMatcher`实例求值的表达式(另请参见: @ref[路径匹配器DSL](../../path-matchers.md))。
 
-As opposed to the @ref[rawPathPrefix](rawPathPrefix.md) or @ref[rawPathPrefixTest](rawPathPrefixTest.md) directives `path` automatically adds a leading
-slash to its `PathMatcher` argument, you therefore don't have to start your matching expression with an explicit slash.
+与 @ref[rawPathPrefix](rawPathPrefix.md) 或 @ref[rawPathPrefixTest](rawPathPrefixTest.md) 指令相反，`path`会自动在其`PathMatcher`参数中添加一个前导斜杠，因此您不必以明确的斜杠开始匹配的表达式。
 
-The `path` directive attempts to match the **complete** remaining path, not just a prefix. If you only want to match
-a path prefix and then delegate further filtering to a lower level in your routing structure use the @ref[pathPrefix](pathPrefix.md)
-directive instead. As a consequence it doesn't make sense to nest a `path` or @ref[pathPrefix](pathPrefix.md) directive
-underneath another `path` directive, as there is no way that they will ever match (since the unmatched path underneath
-a `path` directive will always be empty). For a comparison between path directives check @ref[Overview of path directives](index.md#overview-path).
+该`path`指令尝试匹配 **完整** 的剩余路径，而不仅仅是前缀。如果只想匹配路径前缀，然后将进一步的筛选委托给路由结构中的较低级别，请使用 @ref[pathPrefix](pathPrefix.md) 指令代替。因此，将一个`path`或 @ref[pathPrefix](pathPrefix.md)指令嵌套在另一个`path`指令底下是没有意义的，因为它们不可能匹配(因为`path`指令下的不匹配路径始终为空)。有关路径指令之间的比较，请查看 @ref[路径指令概述](index.md#overview-path)。
 
-Depending on the type of its `PathMatcher` argument the `path` directive extracts zero or more values from the URI.
-If the match fails the request is rejected with an @ref[empty rejection set](../../rejections.md#empty-rejections).
+根据它的`PathMatcher`参数的类型，`path`指令从URI中提取零个或多个值。如果匹配失败，则使用 @ref[空拒绝集](../../rejections.md#empty-rejections) 拒绝请求。
 
 @@@ note
-The empty string (also called empty word or identity) is a **neutral element** of string concatenation operation,
-so it will match everything, but remember that `path` requires whole remaining path being matched, so (`/`) will succeed
-and (`/whatever`) will fail. The @ref[pathPrefix](pathPrefix.md) provides more liberal behaviour.
+空字符串(也称为空词或标识)是字符串连接操作的 **中立元素**，因此它将匹配所有内容，但请记住，`path`要求匹配其余全部路径，因此(`/`)将成功，而(`/whatever`)将失败。 @ref[pathPrefix](pathPrefix.md) 提供更自由的行为。
 @@@
 
-## Example
+## 示例
 
 Scala
 :  @@snip [PathDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/PathDirectivesExamplesSpec.scala) { #path-example }

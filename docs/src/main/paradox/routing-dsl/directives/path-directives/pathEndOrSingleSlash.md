@@ -2,23 +2,21 @@
 
 @@@ div { .group-scala }
 
-## Signature
+## 签名
 
 @@signature [PathDirectives.scala]($akka-http$/akka-http/src/main/scala/akka/http/scaladsl/server/directives/PathDirectives.scala) { #pathEndOrSingleSlash }
 
 @@@
 
-## Description
+## 描述
 
-Only passes the request to its inner route if the unmatched path of the @apidoc[RequestContext] is either empty
-or contains only one single slash.
+仅当 @apidoc[RequestContext] 的未匹配路径为空或仅包含一个斜杠时，才将请求传递到其内部路由。
 
-This directive is a simple alias for `rawPathPrefix(Slash.? ~ PathEnd)` and is mostly used on an inner-level to
-discriminate "path already fully matched" from other alternatives (see the example below). For a comparison between path directives check @ref[Overview of path directives](index.md#overview-path).
+该指令是`rawPathPrefix(Slash.? ~ PathEnd)`的简单别名，主要用于内部级别，以将"已完全匹配的路径"与其他替代项区分开(请参见下面的示例)。有关路径指令之间的比较，请查看 @ref[路径指令概述](index.md#overview-path)。
 
-It is equivalent to `pathEnd | pathSingleSlash` but slightly more efficient.
+它等同于 `pathEnd | pathSingleSlash`，但效率稍微高一点。
 
-## Example
+## 示例
 
 Scala
 :  @@snip [PathDirectivesExamplesSpec.scala]($test$/scala/docs/http/scaladsl/server/directives/PathDirectivesExamplesSpec.scala) { #pathEndOrSingleSlash- }
